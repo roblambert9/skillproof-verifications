@@ -16,9 +16,9 @@ robots.txt-disallow server (`:8900`), and an honest content server (`:8901`).
 - **63 operations** (3 seeds × 21)
 - **15 honest successes** (local markdown/raw/chunked/prompt fetches + live `example.com`)
 - **48 adversarial cases landed** (every hostile case produced an observed server verdict)
-- **0 invariant violations**
+- **1 invariant not held** (INV2: SSRF guard missing)
 - **Anti-vacuity gate: PASS** — the suite fails if nothing actually executes
-- **Verdict: `pass_with_notes`** — 1 high-severity finding, 3 info notes
+- **Verdict: `fail`** (re-issued per self-correction; see below) — 1 high-severity finding, 3 info notes
 
 ## Invariants
 

@@ -19,7 +19,7 @@
   },
   "verifier": {
     "id": "skillproof",
-    "public_key": "ed25519:4af9d43323b97d7246f4b861a7a672cc7636da0fbc337d2035223f4d3eadb98f",
+    "public_key": "ed25519:cd33c5e83de12cbeb4807fe5456373a61e7adf4543c291b37bd29f31a2dba438",
     "methodology": "skillproof-methodology-1.0"
   },
   "scope": {
@@ -134,7 +134,7 @@
       "status": "open"
     }
   ],
-  "verdict": "pass_with_notes",
+  "verdict": "fail",
   "validity": {
     "issued_at": "2026-09-10T11:47:56.197Z",
     "valid_for_version": "0.6.3",
@@ -144,6 +144,6 @@
   "signature": {
     "algorithm": "Ed25519",
     "signed_payload": "canonical JSON of this manifest excluding the signature object (sorted-keys)",
-    "value": "2ae5381c8cf402683ee85c0e23eea2302954f3180bff24cdaee0a2875c00d38fa44496f1dd6b651e60d2a57d3d73a89c491ea7c216f59a6983b2db32b5f37c0a"
+    "value": "5141cb54e7faa7d693e2cf30c23babafe821e392c7618e8076669689b7389edf81985f0d8f94edcf53505859d6d24c98d6dda54c63355d9caa0dc3df85067f0e"
   }
 }

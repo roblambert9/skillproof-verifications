@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkillProof Scoreboard — Adversarial Verification of MCP Servers</title>
+<style>
+body{font-family:system-ui,-apple-system,sans-serif;background:#0d1117;color:#e6edf3;margin:0;padding:2rem;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto}
+h1{font-size:2rem;margin-bottom:.25rem}
+.sub{color:#8b949e;margin-bottom:2rem}
+table{width:100%;border-collapse:collapse;margin:1.5rem 0}
+th,td{text-align:left;padding:.75rem;border-bottom:1px solid #30363d;vertical-align:top}
+th{color:#8b949e;font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+.fail{color:#f85149;font-weight:700}
+.passnotes{color:#d29922;font-weight:700}
+a{color:#58a6ff}
+.tag{display:inline-block;font-size:.75rem;background:#161b22;border:1px solid #30363d;border-radius:4px;padding:.1rem .5rem;margin-right:.25rem}
+.cta{margin-top:2rem;padding:1.5rem;background:#161b22;border:1px solid #30363d;border-radius:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>The Scoreboard</h1>
+<p class="sub">We don't scan code. We attack live agent skills with adversarial tests and publish signed proof of what they actually do. Any invariant not held ⇒ <strong>FAIL</strong>. Machine-readable feed: <a href="leaderboard.json">leaderboard.json</a></p>
+<table>
+<tr><th>#</th><th>Skill</th><th>Verdict</th><th>Battery</th><th>Headline finding</th><th>Proof</th></tr>
+<tr><td>01</td><td>MCP Filesystem Server <span class="tag">v0.6.3</span></td><td class="passnotes">PASS*</td><td>228 ops · 174 adversarial</td><td>5/5 invariants held. One info residual: theoretical TOCTOU.</td><td><a href="https://github.com/roblambert9/skillproof-verifications/tree/main/demo-filesystem">manifest</a></td></tr>
+<tr><td>02</td><td>MCP Fetch Server <span class="tag">v0.6.3</span></td><td class="fail">FAIL</td><td>63 ops · 48 adversarial</td><td>No SSRF guard: followed a local 302 redirect to loopback and fetched it.</td><td><a href="https://github.com/roblambert9/skillproof-verifications/tree/main/demo-fetch">manifest</a></td></tr>
+<tr><td>03</td><td>MCP Postgres Server <span class="tag">v0.6.2</span></td><td class="fail">FAIL</td><td>96 ops · 78 adversarial</td><td>Stacked COMMIT escaped the read-only transaction; persistent write landed.</td><td><a href="https://github.com/roblambert9/skillproof-verifications/tree/main/demo-postgres">manifest</a></td></tr>
+<tr><td>04</td><td>MCP SQLite Server <span class="tag">v0.6.2</span></td><td class="fail">FAIL</td><td>81 ops · 60 adversarial</td><td>VACUUM INTO is an unrestricted file-write primitive via write-query.</td><td><a href="https://github.com/roblambert9/skillproof-verifications/tree/main/demo-sqlite">manifest</a></td></tr>
+<tr><td>07</td><td>MCP Memory Server <span class="tag">v0.6.2</span></td><td class="fail">FAIL</td><td>81 ops · 51 adversarial</td><td>create_relations accepts relations between nonexistent entities.</td><td><a href="https://github.com/roblambert9/skillproof-verifications/tree/main/demo-memory">manifest</a></td></tr>
+</table>
+<p class="sub">*PASS with notes. Corpus: 4 of 5 official MCP servers FAIL their advertised safety invariants.</p>
+<div class="cta">
+<strong>Get your skill off the FAIL list.</strong><br>
+Sprint $500/48h · Standard $1,500/5d · Continuous $300/skill/mo · Fleet pilots from $5k.<br>
+Remediation → re-verification → Continuous. A FAIL today is a PASS tomorrow.
+</div>
+</div>
+</body>
+</html>

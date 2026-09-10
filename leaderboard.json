@@ -1,0 +1,67 @@
+{
+  "leaderboard_version": "1.0",
+  "updated_at": "2026-09-10",
+  "methodology": "Adversarial invariant verification. Any invariant not_held => FAIL.",
+  "entries": [
+    {
+      "id": "01",
+      "skill": "MCP Filesystem Server (official)",
+      "version": "0.6.3",
+      "verdict": "pass_with_notes",
+      "operations": 228,
+      "honest_successes": 54,
+      "adversarial_landed": 174,
+      "invariants_held": "5/5",
+      "headline": "All invariants held. One info residual: theoretical TOCTOU.",
+      "manifest": "https://github.com/roblambert9/skillproof-verifications/tree/main/demo-filesystem"
+    },
+    {
+      "id": "02",
+      "skill": "MCP Fetch Server (official)",
+      "version": "0.6.3",
+      "verdict": "FAIL",
+      "operations": 63,
+      "honest_successes": 15,
+      "adversarial_landed": 48,
+      "invariants_held": "4/5",
+      "headline": "No SSRF guard: followed a local 302 redirect to loopback and fetched it.",
+      "manifest": "https://github.com/roblambert9/skillproof-verifications/tree/main/demo-fetch"
+    },
+    {
+      "id": "03",
+      "skill": "MCP Postgres Server (official)",
+      "version": "0.6.2",
+      "verdict": "FAIL",
+      "operations": 96,
+      "honest_successes": 18,
+      "adversarial_landed": 78,
+      "invariants_held": "3/5",
+      "headline": "Stacked COMMIT escaped the read-only transaction; persistent write landed.",
+      "manifest": "https://github.com/roblambert9/skillproof-verifications/tree/main/demo-postgres"
+    },
+    {
+      "id": "04",
+      "skill": "MCP SQLite Server (official)",
+      "version": "0.6.2",
+      "verdict": "FAIL",
+      "operations": 81,
+      "honest_successes": 21,
+      "adversarial_landed": 60,
+      "invariants_held": "3/5",
+      "headline": "VACUUM INTO is an unrestricted file-write primitive via write-query.",
+      "manifest": "https://github.com/roblambert9/skillproof-verifications/tree/main/demo-sqlite"
+    },
+    {
+      "id": "07",
+      "skill": "MCP Memory Server (official)",
+      "version": "0.6.2",
+      "verdict": "FAIL",
+      "operations": 81,
+      "honest_successes": 30,
+      "adversarial_landed": 51,
+      "invariants_held": "3/5",
+      "headline": "create_relations accepts relations between nonexistent entities.",
+      "manifest": "https://github.com/roblambert9/skillproof-verifications/tree/main/demo-memory"
+    }
+  ]
+}

@@ -28,6 +28,10 @@ A verification service that publicly downgrades its own verdict is one you can t
 - **demo-sqlite/** — #04: official sqlite server. Arbitrary file-write primitive via `VACUUM INTO`. `fail`.
 - **demo-memory/** — #07: official memory server. `create_relations` accepts dangling references to nonexistent entities. `fail`.
 - **a2a-interface/** — Machine-readable service descriptor + JSON schemas + reference HTTP service so agents can discover, request, and pay for verification programmatically. See `a2a-interface/README.md`.
+- **scoreboard-gate/** — Zero-dependency GitHub Action + local CLI for CI pipelines. Blocks builds on tampered, expired, or FAIL manifests. 7/7 tests green.
+- **protocol/** — Trust Protocol v1 client (`trust-gate.mjs`). Agents verify tool manifests at runtime before invocation (enforce/warn/audit modes). 7/7 tests green.
+- **warranty/** — SkillProof Warranty policy: 10x fee payouts backing PASS manifests.
+- **leaderboard.html** & **leaderboard.json** — Public living scorecard and machine-readable feed of evaluated MCP servers.
 
 Each verification re-runs end to end:
 

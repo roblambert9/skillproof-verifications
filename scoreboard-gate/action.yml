@@ -1,0 +1,23 @@
+name: "SkillProof Gate"
+description: "Block deploys when an agent skill's Trust Manifest regresses"
+inputs:
+  manifest_url:
+    description: "URL of the skill's trust-manifest.json"
+    required: true
+  require_verdict:
+    description: "Minimum acceptable verdict: pass or pass_with_notes"
+    required: false
+    default: "pass_with_notes"
+  expected_code_hash:
+    description: "Pinned code hash, e.g. sha256:abc123. Fails if the manifest pins a different hash."
+    required: false
+    default: ""
+outputs:
+  verdict:
+    description: "The verified manifest verdict"
+runs:
+  using: "node20"
+  main: "gate.mjs"
+branding:
+  icon: "shield"
+  color: "red"

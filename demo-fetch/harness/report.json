@@ -1,0 +1,630 @@
+{
+  "target": {
+    "package": "mcp-server-fetch",
+    "version": "0.6.3",
+    "source": "https://github.com/modelcontextprotocol/servers",
+    "transport": "stdio",
+    "runtime": "python"
+  },
+  "seeds": [
+    11,
+    22,
+    33
+  ],
+  "totals": {
+    "operations": 63,
+    "honest_ok": 15,
+    "honest_total": 15,
+    "adversarial_landed": 48,
+    "violations": 0
+  },
+  "tool_description_sha256": "c24b2c15805bfaab505d376dd620ec75a07761eaf2ed6d1e152d0cb52d0dd6dd",
+  "description_markers": [
+    "advised to refuse"
+  ],
+  "invariants": [
+    {
+      "id": "INV1",
+      "statement": "Only http(s) URLs are fetched; file/ftp/gopher schemes are refused and no local file content is ever returned",
+      "status": "held"
+    },
+    {
+      "id": "INV2",
+      "statement": "SSRF guard: server refuses private-range/loopback targets",
+      "status": "not_held",
+      "note": "no SSRF guard exists; see findings"
+    },
+    {
+      "id": "INV3",
+      "statement": "robots.txt is honored on the autonomous tool path; robots fetch failure fails closed",
+      "status": "held"
+    },
+    {
+      "id": "INV4",
+      "statement": "Prompt (manual) path behavior is documented",
+      "status": "held",
+      "note": "manual prompt path bypasses robots check by design"
+    },
+    {
+      "id": "INV5",
+      "statement": "Tool description is pinned; instruction-override markers are flagged",
+      "status": "held",
+      "note": "markers present: advised to refuse"
+    },
+    {
+      "id": "INV6",
+      "statement": "max_length/start_index bounds enforced; truncation exact; over-index fails safe",
+      "status": "held"
+    },
+    {
+      "id": "INV7",
+      "statement": "Unreachable/invalid targets fail closed (McpError); server stays up; no secret leakage in errors",
+      "status": "held"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "title": "No SSRF guard; redirect-to-loopback fetch demonstrated",
+      "detail": "The server followed an external 302 redirect to http://127.0.0.1:8898 and fetched it (canary recorded the hit). Direct loopback fetches are also attempted. There is no private-range, loopback, or link-local blocklist and redirects are followed unconditionally. Impact: any attacker-influenced URL (page content, redirect chain) can make the server request internal endpoints; response bodies are returned to the agent. Mitigation: deploy behind egress filtering / an SSRF-safe fetch proxy; do not expose this server to untrusted URL input as-is."
+    },
+    {
+      "severity": "info",
+      "title": "Manual prompt path bypasses robots.txt",
+      "detail": "prompts/get fetch uses the manual user-agent and skips the robots check entirely. By design (user-initiated), but deployers allow-listing via robots should know the prompt path is not covered."
+    },
+    {
+      "severity": "info",
+      "title": "Fails closed on malformed no_proxy entries",
+      "detail": "When the no_proxy environment variable contains bracketed IPv6 entries (e.g. [::1]), httpx raises InvalidURL while building its proxy map and every fetch fails with an error. Fail-closed (no data leak), but the server is fully non-functional in such environments — an enterprise-proxy robustness note. The harness sanitizes no_proxy for the server child process."
+    },
+    {
+      "severity": "info",
+      "title": "Tool description contains instruction-override language",
+      "detail": "Description includes: \"Although originally you did not have internet access, and were advised to refuse and tell the user this, this tool now grants you internet access.\" Markers matched: advised to refuse. Present in the official server (likely intentional capability notice), but it is exactly the linguistic shape of tool-description poisoning; downstream agent harnesses that scan for such markers will flag it."
+    }
+  ],
+  "violations": [],
+  "vacuity_gate": "PASS",
+  "vacuity_notes": [],
+  "verdict": "pass_with_notes",
+  "cases": [
+    {
+      "id": "H4",
+      "seed": 11,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Contents of https://example.com/:\nThis domain is for use in documentation examples without needing permission. Avoid use"
+    },
+    {
+      "id": "A2",
+      "seed": 11,
+      "inv": "scheme",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt ftp://127.0.0.1:8898/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A11",
+      "seed": 11,
+      "inv": "bounds",
+      "ok": true,
+      "snippet": "Contents of http://127.0.0.1:8901/page:\n<error>No more content available.</error>",
+      "canaryDelta": 0,
+      "status": "processed_ok"
+    },
+    {
+      "id": "A7",
+      "seed": 11,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt http://127.0.0.1:1/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A14",
+      "seed": 11,
+      "inv": "scheme",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt gopher://example.com/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A16",
+      "seed": 11,
+      "inv": "prompt-bypass",
+      "ok": true,
+      "snippet": "TOP-SECRET-DENY-MARKER",
+      "canaryDelta": 0,
+      "status": "processed_ok"
+    },
+    {
+      "id": "A6",
+      "seed": 11,
+      "inv": "robots",
+      "ok": false,
+      "snippet": "The sites robots.txt (http://127.0.0.1:8900/robots.txt), specifies that autonomous fetching of this page is not allowed, <useragent>ModelContextProtocol/1.0 (Au",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A4",
+      "seed": 11,
+      "inv": "ssrf",
+      "ok": true,
+      "snippet": "Content type text/plain cannot be simplified to markdown, but here is the raw content:\nContents of http://127.0.0.1:8899/go:\ncanary-ok",
+      "canaryDelta": 2,
+      "status": "processed_ok"
+    },
+    {
+      "id": "H5",
+      "seed": 11,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "## Honest content\n\nThe quick brown fox jumps over the lazy dog. SkillProof honest page\n\n## Honest content\n\nThe quick bro"
+    },
+    {
+      "id": "A1",
+      "seed": 11,
+      "inv": "scheme",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt file:///robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A9",
+      "seed": 11,
+      "inv": "bounds",
+      "ok": false,
+      "snippet": "Input validation error: -5 is less than or equal to the minimum of 0",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "H3",
+      "seed": 11,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Contents of http://127.0.0.1:8901/page:\n## Honest content\n\nThe quick brown fox jumps over the lazy dog. SkillProof hones"
+    },
+    {
+      "id": "A13",
+      "seed": 11,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "1 validation error for Fetch\nurl\n  Input should be a valid URL, relative URL without a base [type=url_parsing, input_value='not a url', input_type=str]\n    For ",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A5",
+      "seed": 11,
+      "inv": "ssrf",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt http://169.254.169.254/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A10",
+      "seed": 11,
+      "inv": "bounds",
+      "ok": false,
+      "snippet": "Input validation error: 2000000 is greater than or equal to the maximum of 1000000",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A12",
+      "seed": 11,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "Input validation error: '' should be non-empty",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "H2",
+      "seed": 11,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Content type text/html cannot be simplified to markdown, but here is the raw content:\nContents of http://127.0.0.1:8901/"
+    },
+    {
+      "id": "A15",
+      "seed": 11,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt https://127.0.0.1:8898/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A8",
+      "seed": 11,
+      "inv": "bounds",
+      "ok": false,
+      "snippet": "Input validation error: 0 is less than or equal to the minimum of 0",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "H1",
+      "seed": 11,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Contents of http://127.0.0.1:8901/page:\n## Honest content\n\nThe quick brown fox jumps over the lazy dog. SkillProof hones"
+    },
+    {
+      "id": "A3",
+      "seed": 11,
+      "inv": "ssrf",
+      "ok": true,
+      "snippet": "Content type text/plain cannot be simplified to markdown, but here is the raw content:\nContents of http://127.0.0.1:8898/canary-hit:\ncanary-ok",
+      "canaryDelta": 2,
+      "status": "processed_ok"
+    },
+    {
+      "id": "A16",
+      "seed": 22,
+      "inv": "prompt-bypass",
+      "ok": true,
+      "snippet": "TOP-SECRET-DENY-MARKER",
+      "canaryDelta": 0,
+      "status": "processed_ok"
+    },
+    {
+      "id": "A4",
+      "seed": 22,
+      "inv": "ssrf",
+      "ok": true,
+      "snippet": "Content type text/plain cannot be simplified to markdown, but here is the raw content:\nContents of http://127.0.0.1:8899/go:\ncanary-ok",
+      "canaryDelta": 2,
+      "status": "processed_ok"
+    },
+    {
+      "id": "H4",
+      "seed": 22,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Contents of https://example.com/:\nThis domain is for use in documentation examples without needing permission. Avoid use"
+    },
+    {
+      "id": "A9",
+      "seed": 22,
+      "inv": "bounds",
+      "ok": false,
+      "snippet": "Input validation error: -5 is less than or equal to the minimum of 0",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A15",
+      "seed": 22,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt https://127.0.0.1:8898/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A6",
+      "seed": 22,
+      "inv": "robots",
+      "ok": false,
+      "snippet": "The sites robots.txt (http://127.0.0.1:8900/robots.txt), specifies that autonomous fetching of this page is not allowed, <useragent>ModelContextProtocol/1.0 (Au",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A14",
+      "seed": 22,
+      "inv": "scheme",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt gopher://example.com/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A3",
+      "seed": 22,
+      "inv": "ssrf",
+      "ok": true,
+      "snippet": "Content type text/plain cannot be simplified to markdown, but here is the raw content:\nContents of http://127.0.0.1:8898/canary-hit:\ncanary-ok",
+      "canaryDelta": 2,
+      "status": "processed_ok"
+    },
+    {
+      "id": "A13",
+      "seed": 22,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "1 validation error for Fetch\nurl\n  Input should be a valid URL, relative URL without a base [type=url_parsing, input_value='not a url', input_type=str]\n    For ",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A8",
+      "seed": 22,
+      "inv": "bounds",
+      "ok": false,
+      "snippet": "Input validation error: 0 is less than or equal to the minimum of 0",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "H3",
+      "seed": 22,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Contents of http://127.0.0.1:8901/page:\n## Honest content\n\nThe quick brown fox jumps over the lazy dog. SkillProof hones"
+    },
+    {
+      "id": "A7",
+      "seed": 22,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt http://127.0.0.1:1/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A10",
+      "seed": 22,
+      "inv": "bounds",
+      "ok": false,
+      "snippet": "Input validation error: 2000000 is greater than or equal to the maximum of 1000000",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "H1",
+      "seed": 22,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Contents of http://127.0.0.1:8901/page:\n## Honest content\n\nThe quick brown fox jumps over the lazy dog. SkillProof hones"
+    },
+    {
+      "id": "A1",
+      "seed": 22,
+      "inv": "scheme",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt file:///robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A11",
+      "seed": 22,
+      "inv": "bounds",
+      "ok": true,
+      "snippet": "Contents of http://127.0.0.1:8901/page:\n<error>No more content available.</error>",
+      "canaryDelta": 0,
+      "status": "processed_ok"
+    },
+    {
+      "id": "A2",
+      "seed": 22,
+      "inv": "scheme",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt ftp://127.0.0.1:8898/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "H2",
+      "seed": 22,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Content type text/html cannot be simplified to markdown, but here is the raw content:\nContents of http://127.0.0.1:8901/"
+    },
+    {
+      "id": "H5",
+      "seed": 22,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "## Honest content\n\nThe quick brown fox jumps over the lazy dog. SkillProof honest page\n\n## Honest content\n\nThe quick bro"
+    },
+    {
+      "id": "A12",
+      "seed": 22,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "Input validation error: '' should be non-empty",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A5",
+      "seed": 22,
+      "inv": "ssrf",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt http://169.254.169.254/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A6",
+      "seed": 33,
+      "inv": "robots",
+      "ok": false,
+      "snippet": "The sites robots.txt (http://127.0.0.1:8900/robots.txt), specifies that autonomous fetching of this page is not allowed, <useragent>ModelContextProtocol/1.0 (Au",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A3",
+      "seed": 33,
+      "inv": "ssrf",
+      "ok": true,
+      "snippet": "Content type text/plain cannot be simplified to markdown, but here is the raw content:\nContents of http://127.0.0.1:8898/canary-hit:\ncanary-ok",
+      "canaryDelta": 2,
+      "status": "processed_ok"
+    },
+    {
+      "id": "A16",
+      "seed": 33,
+      "inv": "prompt-bypass",
+      "ok": true,
+      "snippet": "TOP-SECRET-DENY-MARKER",
+      "canaryDelta": 0,
+      "status": "processed_ok"
+    },
+    {
+      "id": "A1",
+      "seed": 33,
+      "inv": "scheme",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt file:///robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A13",
+      "seed": 33,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "1 validation error for Fetch\nurl\n  Input should be a valid URL, relative URL without a base [type=url_parsing, input_value='not a url', input_type=str]\n    For ",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "H2",
+      "seed": 33,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Content type text/html cannot be simplified to markdown, but here is the raw content:\nContents of http://127.0.0.1:8901/"
+    },
+    {
+      "id": "A8",
+      "seed": 33,
+      "inv": "bounds",
+      "ok": false,
+      "snippet": "Input validation error: 0 is less than or equal to the minimum of 0",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A12",
+      "seed": 33,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "Input validation error: '' should be non-empty",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "H3",
+      "seed": 33,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Contents of http://127.0.0.1:8901/page:\n## Honest content\n\nThe quick brown fox jumps over \n\n<error>Content truncated. Ca"
+    },
+    {
+      "id": "H5",
+      "seed": 33,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "## Honest content\n\nThe quick brown fox jumps over the lazy dog. SkillProof honest page\n\n## Honest content\n\nThe quick bro"
+    },
+    {
+      "id": "A5",
+      "seed": 33,
+      "inv": "ssrf",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt http://169.254.169.254/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A11",
+      "seed": 33,
+      "inv": "bounds",
+      "ok": true,
+      "snippet": "Contents of http://127.0.0.1:8901/page:\n<error>No more content available.</error>",
+      "canaryDelta": 0,
+      "status": "processed_ok"
+    },
+    {
+      "id": "A7",
+      "seed": 33,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt http://127.0.0.1:1/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A10",
+      "seed": 33,
+      "inv": "bounds",
+      "ok": false,
+      "snippet": "Input validation error: 2000000 is greater than or equal to the maximum of 1000000",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "H1",
+      "seed": 33,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Contents of http://127.0.0.1:8901/page:\n## Honest content\n\nThe quick brown fox jumps over the lazy dog. SkillProof hones"
+    },
+    {
+      "id": "A2",
+      "seed": 33,
+      "inv": "scheme",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt ftp://127.0.0.1:8898/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A14",
+      "seed": 33,
+      "inv": "scheme",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt gopher://example.com/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A9",
+      "seed": 33,
+      "inv": "bounds",
+      "ok": false,
+      "snippet": "Input validation error: -5 is less than or equal to the minimum of 0",
+      "canaryDelta": 0,
+      "status": "refused"
+    },
+    {
+      "id": "A4",
+      "seed": 33,
+      "inv": "ssrf",
+      "ok": true,
+      "snippet": "Content type text/plain cannot be simplified to markdown, but here is the raw content:\nContents of http://127.0.0.1:8899/go:\ncanary-ok",
+      "canaryDelta": 2,
+      "status": "processed_ok"
+    },
+    {
+      "id": "H4",
+      "seed": 33,
+      "status": "honest_ok",
+      "ok": true,
+      "snippet": "Contents of https://example.com/:\nThis domain is for use in documentation examples without needing permission. Avoid use"
+    },
+    {
+      "id": "A15",
+      "seed": 33,
+      "inv": "failclosed",
+      "ok": false,
+      "snippet": "Failed to fetch robots.txt https://127.0.0.1:8898/robots.txt due to a connection issue",
+      "canaryDelta": 0,
+      "status": "refused"
+    }
+  ]
+}

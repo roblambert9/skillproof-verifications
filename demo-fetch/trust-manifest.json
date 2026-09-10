@@ -1,0 +1,149 @@
+{
+  "manifest_version": "1.0",
+  "subject": {
+    "skill_id": "io.github.modelcontextprotocol/server-fetch",
+    "display_name": "MCP Fetch Server (official)",
+    "version": "0.6.3",
+    "code_hash": "sha256:e75506ed4094664b3f50aa4af269e8eaf5d0e5210701d18d4145a06a5f4dd26e",
+    "source": "https://github.com/modelcontextprotocol/servers",
+    "commit": "d73f99e",
+    "tools": [
+      {
+        "name": "fetch",
+        "description_hash": "c24b2c15805bfaab505d376dd620ec75a07761eaf2ed6d1e152d0cb52d0dd6dd",
+        "side_effects": [
+          "network-egress"
+        ]
+      }
+    ]
+  },
+  "verifier": {
+    "id": "skillproof",
+    "public_key": "ed25519:4af9d43323b97d7246f4b861a7a672cc7636da0fbc337d2035223f4d3eadb98f",
+    "methodology": "skillproof-methodology-1.0"
+  },
+  "scope": {
+    "tools_reviewed": [
+      "fetch"
+    ],
+    "out_of_scope": [
+      "SSRF guard: the server has none by design; documented as a high-severity finding, not a tested-and-held invariant",
+      "prompt-injection resistance of any connected LLM (model-level, not skill code)",
+      "TLS certificate validation posture of the deployment proxy",
+      "content-safety of fetched pages (not a content filter)"
+    ]
+  },
+  "invariants": [
+    {
+      "id": "INV1",
+      "class": "authorization",
+      "statement": "Only http(s) URLs are fetched; file/ftp/gopher schemes are refused and no local file content is ever returned",
+      "status": "verified",
+      "operations_tested": 63,
+      "adversarial_cases": 48
+    },
+    {
+      "id": "INV2",
+      "class": "authorization",
+      "statement": "SSRF guard: server refuses private-range/loopback targets Note: no SSRF guard exists; see findings",
+      "status": "not_held",
+      "operations_tested": 63,
+      "adversarial_cases": 48
+    },
+    {
+      "id": "INV3",
+      "class": "authorization",
+      "statement": "robots.txt is honored on the autonomous tool path; robots fetch failure fails closed",
+      "status": "verified",
+      "operations_tested": 63,
+      "adversarial_cases": 48
+    },
+    {
+      "id": "INV4",
+      "class": "authorization",
+      "statement": "Prompt (manual) path behavior is documented Note: manual prompt path bypasses robots check by design",
+      "status": "verified",
+      "operations_tested": 63,
+      "adversarial_cases": 48
+    },
+    {
+      "id": "INV5",
+      "class": "description_fidelity",
+      "statement": "Tool description is pinned; instruction-override markers are flagged Note: markers present: advised to refuse",
+      "status": "verified",
+      "operations_tested": 63,
+      "adversarial_cases": 48
+    },
+    {
+      "id": "INV6",
+      "class": "fail_closed",
+      "statement": "max_length/start_index bounds enforced; truncation exact; over-index fails safe",
+      "status": "verified",
+      "operations_tested": 63,
+      "adversarial_cases": 48
+    },
+    {
+      "id": "INV7",
+      "class": "fail_closed",
+      "statement": "Unreachable/invalid targets fail closed (McpError); server stays up; no secret leakage in errors",
+      "status": "verified",
+      "operations_tested": 63,
+      "adversarial_cases": 48
+    }
+  ],
+  "harness": {
+    "hash": "sha256:cfb8deeb14f26f0158295cd4787764d7e5d15a86bf292d04a05e26af34ef3885",
+    "anti_vacuity": true,
+    "seeds": 3,
+    "min_successful_operations": 15,
+    "min_adversarial_landed": 48
+  },
+  "static_scan": {
+    "tools": [
+      "skillproof-description-scan (6 instruction-override markers over 1 tool description)"
+    ],
+    "critical_findings": 0
+  },
+  "findings": [
+    {
+      "id": "NOTE-FETCH-1",
+      "severity": "high",
+      "title": "No SSRF guard; redirect-to-loopback fetch demonstrated",
+      "description": "The server followed an external 302 redirect to http://127.0.0.1:8898 and fetched it (canary recorded the hit). Direct loopback fetches are also attempted. There is no private-range, loopback, or link-local blocklist and redirects are followed unconditionally. Impact: any attacker-influenced URL (page content, redirect chain) can make the server request internal endpoints; response bodies are returned to the agent. Mitigation: deploy behind egress filtering / an SSRF-safe fetch proxy; do not expose this server to untrusted URL input as-is.",
+      "status": "open"
+    },
+    {
+      "id": "NOTE-FETCH-2",
+      "severity": "info",
+      "title": "Manual prompt path bypasses robots.txt",
+      "description": "prompts/get fetch uses the manual user-agent and skips the robots check entirely. By design (user-initiated), but deployers allow-listing via robots should know the prompt path is not covered.",
+      "status": "open"
+    },
+    {
+      "id": "NOTE-FETCH-3",
+      "severity": "info",
+      "title": "Fails closed on malformed no_proxy entries",
+      "description": "When the no_proxy environment variable contains bracketed IPv6 entries (e.g. [::1]), httpx raises InvalidURL while building its proxy map and every fetch fails with an error. Fail-closed (no data leak), but the server is fully non-functional in such environments — an enterprise-proxy robustness note. The harness sanitizes no_proxy for the server child process.",
+      "status": "open"
+    },
+    {
+      "id": "NOTE-FETCH-4",
+      "severity": "info",
+      "title": "Tool description contains instruction-override language",
+      "description": "Description includes: \"Although originally you did not have internet access, and were advised to refuse and tell the user this, this tool now grants you internet access.\" Markers matched: advised to refuse. Present in the official server (likely intentional capability notice), but it is exactly the linguistic shape of tool-description poisoning; downstream agent harnesses that scan for such markers will flag it.",
+      "status": "open"
+    }
+  ],
+  "verdict": "pass_with_notes",
+  "validity": {
+    "issued_at": "2026-09-10T11:47:56.197Z",
+    "valid_for_version": "0.6.3",
+    "expires_at": "2026-12-09T11:47:56.197Z",
+    "revoked": false
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "signed_payload": "canonical JSON of this manifest excluding the signature object (sorted-keys)",
+    "value": "2ae5381c8cf402683ee85c0e23eea2302954f3180bff24cdaee0a2875c00d38fa44496f1dd6b651e60d2a57d3d73a89c491ea7c216f59a6983b2db32b5f37c0a"
+  }
+}

@@ -1,0 +1,216 @@
+{
+  "manifest_version": "1.0",
+  "subject": {
+    "skill_id": "io.github.modelcontextprotocol/server-filesystem",
+    "display_name": "MCP Filesystem Server (official)",
+    "version": "0.6.3",
+    "code_hash": "sha256:e94614e742c2650a8c126ba7aa0ed72d2eb1de69f83185fa35d3bd4b9099c4e7",
+    "source": "https://github.com/modelcontextprotocol/servers",
+    "commit": "d73f99e",
+    "tools": [
+      {
+        "name": "read_file",
+        "description_hash": "sha256:7abf56a4c306cf50c1ad1b4568b4d5f28086f068b4052f81aff20e72c0b92d47",
+        "side_effects": [
+          "read"
+        ]
+      },
+      {
+        "name": "read_text_file",
+        "description_hash": "sha256:43033fa70cb5bafe3ded0443fe51f1edd90b4e9d45efac6118e4395d2524011f",
+        "side_effects": [
+          "read"
+        ]
+      },
+      {
+        "name": "read_media_file",
+        "description_hash": "sha256:fa38aac3f24cf15db437e7c88d0106dc9c2ec8aa6e3cf927cb112bc67e787de2",
+        "side_effects": [
+          "read"
+        ]
+      },
+      {
+        "name": "read_multiple_files",
+        "description_hash": "sha256:d5a30eac51a3257ccd4b0acf3b70788f2b180fe1b9807c02644fa3389ebcbcb0",
+        "side_effects": [
+          "write"
+        ]
+      },
+      {
+        "name": "write_file",
+        "description_hash": "sha256:182c8895da7eacc6f301ba5895d779aca5c0a29cf622fa14f34f728657f79688",
+        "side_effects": [
+          "write"
+        ]
+      },
+      {
+        "name": "edit_file",
+        "description_hash": "sha256:1349a91ad62c6a43363a6af7995e3f29f44bf5e9c5310dadd8c278aec75e3969",
+        "side_effects": [
+          "write"
+        ]
+      },
+      {
+        "name": "create_directory",
+        "description_hash": "sha256:7e243b9bddbea4a901f0807ae14535972587b896eecde076b03dd4fbd3a9b5bd",
+        "side_effects": [
+          "write"
+        ]
+      },
+      {
+        "name": "list_directory",
+        "description_hash": "sha256:2a89821007a4702b0f7e7cd13107b335d1c49baba8ffc4d38fe8d1cfbe3ac789",
+        "side_effects": [
+          "read"
+        ]
+      },
+      {
+        "name": "list_directory_with_sizes",
+        "description_hash": "sha256:5f974132fd515ca908bb2dd84e3a7d95426b4b7905e785c6726f2399218a6d6b",
+        "side_effects": [
+          "read"
+        ]
+      },
+      {
+        "name": "directory_tree",
+        "description_hash": "sha256:a51dfb91799e4e8ff62aad67e4b3665360cc62a328efe43a541e66e0fb78ff01",
+        "side_effects": [
+          "read"
+        ]
+      },
+      {
+        "name": "move_file",
+        "description_hash": "sha256:0a86f8ce8d46144ec865434db66cd5c5f90f16123206b3334d7196477526b2a1",
+        "side_effects": [
+          "write"
+        ]
+      },
+      {
+        "name": "search_files",
+        "description_hash": "sha256:7b4e41beb87051cba82183e4a36cbdce4ee542cc6decaa534a3fccf8b38c0a0e",
+        "side_effects": [
+          "read"
+        ]
+      },
+      {
+        "name": "get_file_info",
+        "description_hash": "sha256:e4cae83266b5e75a423ffb34bd21b66c22d0b9d6b673fb4cc45ea02e7298f7f3",
+        "side_effects": [
+          "read"
+        ]
+      },
+      {
+        "name": "list_allowed_directories",
+        "description_hash": "sha256:aa4aecbfa97e7b0b2f37e02248d576743e3ba69c5a3a33ef0334ed652e445474",
+        "side_effects": [
+          "none"
+        ]
+      }
+    ]
+  },
+  "verifier": {
+    "id": "skillproof",
+    "public_key": "ed25519:fe5741115059c4b6eb190c7b8a4d8d71b496172928186c15593967a770917d2b",
+    "methodology": "skillproof-methodology-1.0"
+  },
+  "scope": {
+    "tools_reviewed": [
+      "read_file",
+      "read_text_file",
+      "read_media_file",
+      "read_multiple_files",
+      "write_file",
+      "edit_file",
+      "create_directory",
+      "list_directory",
+      "list_directory_with_sizes",
+      "directory_tree",
+      "move_file",
+      "search_files",
+      "get_file_info",
+      "list_allowed_directories"
+    ],
+    "out_of_scope": [
+      "TOCTOU race between path validation and file use (requires concurrent local attacker; not demonstrated)",
+      "prompt-injection resistance of any connected LLM (model-level, not skill code)",
+      "host OS filesystem permission model",
+      "replay/idempotency: not applicable, tools are stateless"
+    ]
+  },
+  "invariants": [
+    {
+      "id": "INV-AUTH-1",
+      "class": "authorization",
+      "statement": "No tool operation succeeds on a path whose canonical (symlink-resolved) location lies outside the allowed directories — across traversal, absolute, relative, symlink-escape, null-byte, Windows-drive, and home-expansion probes, on all 13 path-taking tools.",
+      "status": "verified",
+      "operations_tested": 228,
+      "adversarial_cases": 174
+    },
+    {
+      "id": "INV-AUTH-2",
+      "class": "authorization",
+      "statement": "move_file cannot relocate files across the boundary in either direction; a destination occupied by anything (file, directory, or symlink, detected via lstat) is rejected.",
+      "status": "verified",
+      "operations_tested": 15,
+      "adversarial_cases": 15
+    },
+    {
+      "id": "INV-DATA-1",
+      "class": "data_flow",
+      "statement": "No tool response — success, refusal, or error — contains the planted secret canary; the out-of-boundary secret tree is bit-identical before and after the full battery; no boundary-crossing artifacts created.",
+      "status": "verified",
+      "operations_tested": 228,
+      "adversarial_cases": 174
+    },
+    {
+      "id": "INV-DESC-1",
+      "class": "description_fidelity",
+      "statement": "No tool description contains instruction-override markers (9-pattern scan); all 14 description hashes pinned in this manifest.",
+      "status": "verified",
+      "operations_tested": 42,
+      "adversarial_cases": 0
+    },
+    {
+      "id": "INV-FAIL-1",
+      "class": "fail_closed",
+      "statement": "Every adversarial probe terminates in refusal or safe error (no hangs, no crashes; server responsive at end of battery); benign in-boundary symlink use continues to work — no false-positive breakage.",
+      "status": "verified",
+      "operations_tested": 228,
+      "adversarial_cases": 174
+    }
+  ],
+  "harness": {
+    "hash": "sha256:91162950a2b078307ecf7a7ca4c78612f201fc78ba57a0988d048f7d6813f99f",
+    "anti_vacuity": true,
+    "seeds": 3,
+    "min_successful_operations": 54,
+    "min_adversarial_landed": 174
+  },
+  "static_scan": {
+    "tools": [
+      "skillproof-description-scan (9 instruction-override markers over 14 tool descriptions)"
+    ],
+    "critical_findings": 0
+  },
+  "findings": [
+    {
+      "id": "NOTE-TOCTOU-1",
+      "severity": "info",
+      "title": "Residual: validation-to-use race window",
+      "description": "validatePath resolves symlinks and checks the boundary, but a concurrent local attacker swapping a path component between validation and file open could theoretically bypass it. Not demonstrated; requires local code execution alongside the server. Writes use atomic rename and exclusive creation to narrow this window.",
+      "status": "open"
+    }
+  ],
+  "verdict": "pass_with_notes",
+  "validity": {
+    "issued_at": "2026-09-09T22:31:38.718Z",
+    "valid_for_version": "0.6.3",
+    "expires_at": "2026-12-08T22:31:38.718Z",
+    "revoked": false
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "signed_payload": "canonical JSON of this manifest excluding the signature object (sorted-keys)",
+    "value": "3f7ca296626cbf8fdb617b3d797b1a835564ce7bbb9844be76bd3192730c60a9a3ad1a711216252b9415b7904e0716b290abf50989473decff9e7af1bcaf2503"
+  }
+}

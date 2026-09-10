@@ -1,0 +1,119 @@
+{
+  "manifest_version": "1.0",
+  "subject": {
+    "skill_id": "io.github.modelcontextprotocol/server-sqlite",
+    "display_name": "MCP SQLite Server (official)",
+    "version": "0.6.2",
+    "code_hash": "sha256:94a36286d2ea49d095704167846283f0c2c2d5d1",
+    "source": "https://github.com/modelcontextprotocol/servers",
+    "commit": "94a36286d2ea49d095704167846283f0c2c2d5d1",
+    "tools": [
+      {
+        "name": "read_query",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "db-read"
+        ]
+      },
+      {
+        "name": "write_query",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "db-write",
+          "fs-write"
+        ]
+      }
+    ]
+  },
+  "verifier": {
+    "id": "skillproof",
+    "public_key": "ed25519:c5fc3a9363116aa4a557ac35ba96866471e80280da8b77e1f6a700537f3bd392",
+    "methodology": "skillproof-methodology-1.0"
+  },
+  "scope": {
+    "tools_reviewed": [
+      "read_query",
+      "write_query"
+    ],
+    "out_of_scope": [
+      "host operating system file access policies"
+    ]
+  },
+  "invariants": [
+    {
+      "id": "INV1",
+      "class": "containment",
+      "statement": "file system boundary enforcement",
+      "status": "not_held",
+      "operations_tested": 81,
+      "adversarial_cases": 60
+    },
+    {
+      "id": "INV2",
+      "class": "authorization",
+      "statement": "write-query restricted to INSERT/UPDATE/DELETE",
+      "status": "not_held",
+      "operations_tested": 81,
+      "adversarial_cases": 60
+    },
+    {
+      "id": "INV3",
+      "class": "isolation",
+      "statement": "read queries cannot mutate database",
+      "status": "verified",
+      "operations_tested": 81,
+      "adversarial_cases": 60
+    },
+    {
+      "id": "INV4",
+      "class": "injection",
+      "statement": "SQL syntax escaping containment",
+      "status": "verified",
+      "operations_tested": 81,
+      "adversarial_cases": 60
+    },
+    {
+      "id": "INV5",
+      "class": "fail_closed",
+      "statement": "corrupt schema fail-closed behavior",
+      "status": "verified",
+      "operations_tested": 81,
+      "adversarial_cases": 60
+    }
+  ],
+  "harness": {
+    "hash": "sha256:sqlite-harness-v1",
+    "anti_vacuity": true,
+    "seeds": 3,
+    "min_successful_operations": 21,
+    "min_adversarial_landed": 60
+  },
+  "findings": [
+    {
+      "id": "NOTE-SQLITE-1",
+      "severity": "high",
+      "title": "Arbitrary file-write primitive via VACUUM INTO",
+      "description": "VACUUM INTO creates arbitrary SQLite db files anywhere the process can write",
+      "status": "open"
+    },
+    {
+      "id": "NOTE-SQLITE-2",
+      "severity": "medium",
+      "title": "write-query allows DROP/ALTER/PRAGMA/CREATE",
+      "description": "Only check is query does not start with SELECT; arbitrary DDL allowed",
+      "status": "open"
+    }
+  ],
+  "verdict": "fail",
+  "validity": {
+    "issued_at": "2026-09-10T20:51:29.231Z",
+    "valid_for_version": "0.6.2",
+    "expires_at": "2026-12-09T20:51:29.232Z",
+    "revoked": false
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "signed_payload": "canonical JSON of this manifest excluding the signature object (sorted-keys)",
+    "value": "4a006f0a08d905dd1109aba36d0d712293f3e5c2b7e2da7b00bed90df7e957015bc61802cc03e08ab715eb125e6651eca023c0fd0363766c9eb7ab06a0c91708"
+  }
+}

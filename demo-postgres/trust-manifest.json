@@ -1,0 +1,105 @@
+{
+  "manifest_version": "1.0",
+  "subject": {
+    "skill_id": "io.github.modelcontextprotocol/server-postgres",
+    "display_name": "MCP Postgres Server (official)",
+    "version": "0.6.2",
+    "code_hash": "sha256:94a36286d2ea49d095704167846283f0c2c2d5d1",
+    "source": "https://github.com/modelcontextprotocol/servers",
+    "commit": "94a36286d2ea49d095704167846283f0c2c2d5d1",
+    "tools": [
+      {
+        "name": "query",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "db-read",
+          "db-write"
+        ]
+      }
+    ]
+  },
+  "verifier": {
+    "id": "skillproof",
+    "public_key": "ed25519:fa4393629d12a677f83eab863cd965b2780c2170e5a7574511fd4bb6ecdd90da",
+    "methodology": "skillproof-methodology-1.0"
+  },
+  "scope": {
+    "tools_reviewed": [
+      "query"
+    ],
+    "out_of_scope": [
+      "underlying postgres database server security",
+      "network eavesdropping on TLS"
+    ]
+  },
+  "invariants": [
+    {
+      "id": "INV1",
+      "class": "authorization",
+      "statement": "read-only enforcement in read queries",
+      "status": "not_held",
+      "operations_tested": 96,
+      "adversarial_cases": 78
+    },
+    {
+      "id": "INV2",
+      "class": "description_fidelity",
+      "statement": "advertised capability matches execution",
+      "status": "not_held",
+      "operations_tested": 96,
+      "adversarial_cases": 78
+    },
+    {
+      "id": "INV3",
+      "class": "isolation",
+      "statement": "connection pool isolation",
+      "status": "verified",
+      "operations_tested": 96,
+      "adversarial_cases": 78
+    },
+    {
+      "id": "INV4",
+      "class": "injection",
+      "statement": "parameterized SQL safety",
+      "status": "verified",
+      "operations_tested": 96,
+      "adversarial_cases": 78
+    },
+    {
+      "id": "INV5",
+      "class": "fail_closed",
+      "statement": "malformed SQL error containment",
+      "status": "verified",
+      "operations_tested": 96,
+      "adversarial_cases": 78
+    }
+  ],
+  "harness": {
+    "hash": "sha256:postgres-harness-v1",
+    "anti_vacuity": true,
+    "seeds": 3,
+    "min_successful_operations": 18,
+    "min_adversarial_landed": 78
+  },
+  "findings": [
+    {
+      "id": "NOTE-PG-1",
+      "severity": "high",
+      "title": "Read-only transaction escape via multi-statement queries",
+      "description": "COMMIT ends BEGIN TRANSACTION READ ONLY; stacked queries execute autocommit writes",
+      "status": "open"
+    }
+  ],
+  "verdict": "fail",
+  "validity": {
+    "issued_at": "2026-09-10T20:51:16.321Z",
+    "valid_for_version": "0.6.2",
+    "expires_at": "2026-12-09T20:51:16.321Z",
+    "revoked": false
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "signed_payload": "canonical JSON of this manifest excluding the signature object (sorted-keys)",
+    "value": "21c055b9d0e8a9ed455c738e297c9abf2cdd47ddd9ce0446c511c3ac9ee778141d8aa393e090dd9e041bc913c5aa297d2d29faea342e83352cf929a688fce10e"
+  }
+}

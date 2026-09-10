@@ -1,0 +1,204 @@
+{
+  "manifest_version": "1.0",
+  "subject": {
+    "skill_id": "io.github.modelcontextprotocol/server-memory",
+    "display_name": "MCP Memory Server (official)",
+    "version": "0.6.2",
+    "code_hash": "sha256:072b68ec8ca13b2542678171eea8316daf47bc52d1625bfeea14692d026d03e1",
+    "source": "https://github.com/modelcontextprotocol/servers",
+    "commit": "94a36286d2ea49d095704167846283f0c2c2d5d1",
+    "tools": [
+      {
+        "name": "create_entities",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "graph-write"
+        ]
+      },
+      {
+        "name": "create_relations",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "graph-write"
+        ]
+      },
+      {
+        "name": "add_observations",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "graph-write"
+        ]
+      },
+      {
+        "name": "delete_entities",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "graph-write"
+        ]
+      },
+      {
+        "name": "delete_observations",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "graph-write"
+        ]
+      },
+      {
+        "name": "delete_relations",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "graph-write"
+        ]
+      },
+      {
+        "name": "read_graph",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "graph-read"
+        ]
+      },
+      {
+        "name": "search_nodes",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "graph-read"
+        ]
+      },
+      {
+        "name": "open_nodes",
+        "description_hash": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "side_effects": [
+          "graph-read"
+        ]
+      }
+    ]
+  },
+  "verifier": {
+    "id": "skillproof",
+    "public_key": "ed25519:ed555198fd40ad786d1b046ee0a596900d0d6e50bc2b8c66fc2dfbecec3f9652",
+    "methodology": "skillproof-methodology-1.0"
+  },
+  "scope": {
+    "tools_reviewed": [
+      "create_entities",
+      "create_relations",
+      "add_observations",
+      "delete_entities",
+      "delete_observations",
+      "delete_relations",
+      "read_graph",
+      "search_nodes",
+      "open_nodes"
+    ],
+    "out_of_scope": [
+      "the backing file is at a fixed path inside the server install dir (MEMORY_FILE_PATH); host filesystem permissions outside it are assumed process-confined",
+      "prompt-injection resistance of any connected LLM (model-level, not skill code)",
+      "concurrent writers / TOCTOU on memory.json (single-sequential battery)",
+      "performance under large graphs (small fixture battery)"
+    ]
+  },
+  "invariants": [
+    {
+      "id": "INV1",
+      "class": "authorization",
+      "statement": "adversarial input never leaks or corrupts unrelated entities/relations",
+      "status": "verified",
+      "operations_tested": 81,
+      "adversarial_cases": 51
+    },
+    {
+      "id": "INV2",
+      "class": "data_flow",
+      "statement": "no tool writes outside the fixed memory.json; hostile name/content is data, never a path",
+      "status": "verified",
+      "operations_tested": 81,
+      "adversarial_cases": 51
+    },
+    {
+      "id": "INV3",
+      "class": "injection",
+      "statement": "hostile observation/relation content is stored and retrieved verbatim without altering graph semantics",
+      "status": "verified",
+      "operations_tested": 81,
+      "adversarial_cases": 51
+    },
+    {
+      "id": "INV4",
+      "class": "description_fidelity",
+      "statement": "read-only tools never mutate state; relations require existing endpoints per the advertised description",
+      "status": "not_held",
+      "operations_tested": 81,
+      "adversarial_cases": 51
+    },
+    {
+      "id": "INV5",
+      "class": "fail_closed",
+      "statement": "malformed inputs fail closed; server stays alive; corrupt backing file errors then recovers",
+      "status": "not_held",
+      "operations_tested": 81,
+      "adversarial_cases": 51
+    }
+  ],
+  "harness": {
+    "hash": "sha256:59714ab67485ace8c3a001a50b7cca851a38acb8874cc9724551006e5b630c76",
+    "anti_vacuity": true,
+    "seeds": 3,
+    "min_successful_operations": 30,
+    "min_adversarial_landed": 51
+  },
+  "static_scan": {
+    "tools": [
+      "skillproof-description-scan (6 instruction-override markers over 9 tool descriptions)"
+    ],
+    "critical_findings": 0
+  },
+  "findings": [
+    {
+      "id": "NOTE-MEMORY-1",
+      "severity": "medium",
+      "title": "create_relations accepts relations between nonexistent entities (dangling)",
+      "description": "A09: create_relations {from:\"dangleA\", to:\"dangleB\", relationType:\"haunts\"} returned success and the relation persisted in read_graph on every seed, while open_nodes confirms neither endpoint exists. The tool is described as \"Create multiple new relations between entities in the knowledge graph\" — it enforces no referential integrity, so a client reading the graph receives relations pointing at nothing. Agents building on graph structure cannot trust relation endpoints.",
+      "status": "open"
+    },
+    {
+      "id": "NOTE-MEMORY-2",
+      "severity": "info",
+      "title": "search_nodes input-type validation is order-dependent (numeric query)",
+      "description": "A14: search_nodes {query: 123} errored on 2 seed(s) (\"query.toLowerCase is not a function\") but returned success with an empty graph on 1 seed(s). Mechanism, verified by isolated reproduction: on a non-empty graph the filter callback invokes query.toLowerCase() and throws; on an empty graph [].filter never invokes the callback, so the TypeError is masked and the malformed input silently succeeds. No state corruption or crash either way — inconsistent validation, not an escape.",
+      "status": "open"
+    },
+    {
+      "id": "NOTE-MEMORY-3",
+      "severity": "info",
+      "title": "delete_observations on a nonexistent entity silently succeeds",
+      "description": "A11: \"Observations deleted successfully\" for ghost-entity-zz. Asymmetric with add_observations, which errors \"Entity with name X not found\" for the same missing entity. Silent success hides caller mistakes.",
+      "status": "open"
+    },
+    {
+      "id": "NOTE-MEMORY-4",
+      "severity": "info",
+      "title": "Deleted backing file silently resets the graph to empty",
+      "description": "A17: with memory.json absent, read_graph returns an empty graph with success — the server cannot distinguish first-run from total data loss. There is no integrity check, backup, or warning. Fail-closed on corruption (A16) is genuine, but deletion is a silent full reset.",
+      "status": "open"
+    },
+    {
+      "id": "NOTE-MEMORY-5",
+      "severity": "info",
+      "title": "create_entities silently skips duplicate names",
+      "description": "Probed during research: re-creating an existing entity name returns success with an empty created list (no error, no overwrite). Idempotent, not a vulnerability — callers should not assume the entity was (re)created.",
+      "status": "open"
+    }
+  ],
+  "verdict": "fail",
+  "validity": {
+    "issued_at": "2026-09-10T14:33:46.821Z",
+    "valid_for_version": "0.6.2",
+    "expires_at": "2026-12-09T14:33:46.821Z",
+    "revoked": false
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "signed_payload": "canonical JSON of this manifest excluding the signature object (sorted-keys)",
+    "value": "01f7bf9905c6ec9f052ab544443085a2887d48557607622814bfe054b2df538c194196c0b5dfeef7b36ec6b9457c5a817d577df921e3b3b086c30ff96d4a4a05"
+  }
+}

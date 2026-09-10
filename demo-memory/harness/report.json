@@ -1,0 +1,1233 @@
+{
+  "verification": 7,
+  "target": "server-memory",
+  "version": "0.6.2",
+  "commit": "94a36286d2ea49d095704167846283f0c2c2d5d1",
+  "tool_description_sha256": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+  "seeds": [
+    {
+      "seed": 11,
+      "ops": [
+        {
+          "seed": 11,
+          "id": "H6",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "open_nodes retrieves named node",
+          "verdict": "success",
+          "ms": 2,
+          "landed": true,
+          "text": "{\n  \"entities\": [\n    {\n      \"type\": \"entity\",\n      \"name\": \"h6_ent\",\n      \"entityType\": \"person\",\n      \"observations\": [\n        \"h6 obs\"\n      ]\n    }\n  ],\n  \"relations\": []\n}",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "H8",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "delete_relations removes the relation",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "relation deleted",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "A13",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "add_observations to nonexistent entity",
+          "verdict": "error",
+          "ms": 3,
+          "landed": true,
+          "text": "Entity with name ghost-zz not found",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "A14",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "search_nodes with numeric query",
+          "verdict": "error",
+          "ms": 1,
+          "landed": true,
+          "text": "query.toLowerCase is not a function",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "A15",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "unknown tool",
+          "verdict": "error",
+          "ms": 1,
+          "landed": true,
+          "text": "Unknown tool: nonexistent-tool",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "H1",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "create_entities alice",
+          "verdict": "success",
+          "ms": 3,
+          "landed": true,
+          "text": "[\n  {\n    \"name\": \"h1_alice\",\n    \"entityType\": \"person\",\n    \"observations\": [\n      \"h1 canary\"\n    ]\n  }\n]",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "H5",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "search_nodes finds by observation",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "{\n  \"entities\": [\n    {\n      \"type\": \"entity\",\n      \"name\": \"h5_ent\",\n      \"entityType\": \"person\",\n      \"observations\": [\n        \"h5-unique-canary\"\n      ]\n    }\n  ],\n  \"relations\": []\n}",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "A03",
+          "kind": "adversarial",
+          "inv": "INV1",
+          "desc": "case-differing names are isolated",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "case_isolated=true",
+          "extra": {
+            "isolated": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "H4",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "read_graph returns full graph",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "{\n  \"entities\": [\n    {\n      \"type\": \"entity\",\n      \"name\": \"h6_ent\",\n      \"entityType\": \"person\",\n      \"observations\": [\n        \"h6 obs\"\n      ]\n    },\n    {\n      \"type\": \"entity\",\n      \"name\": \"h8_a\",\n      \"entityType\": \"person\",\n      \"observations\": []\n    },\n    {\n      \"type\": \"entity\",\n      \"name\": \"h8_b\",\n      \"entityType\": \"person\",\n      \"observations\": []\n    },\n    {\n      \"type\": \"entity\",\n      \"name\": \"h1_alice\",\n      \"entityType\": \"person\",\n      \"observations\": [\n        \"h1 canary\"\n      ]\n    },\n    {\n      \"type\": \"entity\",\n      \"name\": \"h5_ent\",\n      \"entityTy",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "H3",
+          "kind": "honest",
+          "inv": "INV3",
+          "desc": "add_observations to existing entity",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "[\n  {\n    \"entityName\": \"h3_ent\",\n    \"addedObservations\": [\n      \"h3 obs\"\n    ]\n  }\n]",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "A09",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "create_relations with nonexistent endpoints (dangling)",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "tool_verdict=success stored=true endpoints_exist=false",
+          "extra": {
+            "dangling_accepted": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "A11",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "delete_observations on nonexistent entity (silent?)",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "verdict=success text=Observations deleted successfully",
+          "extra": {
+            "silent_success": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "A07",
+          "kind": "adversarial",
+          "inv": "INV3",
+          "desc": "hostile relationType round-trips verbatim",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "verbatim=true line_count_ok=true",
+          "extra": {
+            "verbatim": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "H10",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "read_graph shape sanity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "entities=11 relations=2",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "H7",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "delete_observations removes one obs",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "obs deleted selectively",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "A16",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "corrupt backing file: fail closed, recover after repair",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "corrupt_read=error corrupt_write=error alive_during=true recovered=true",
+          "extra": {
+            "fail_closed": true,
+            "recovered": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "A08",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "read-only tools do not mutate the file",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "hash_unchanged=true",
+          "extra": {
+            "pure": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "H9",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "delete_entities removes entity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "entity deleted",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "A12",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "create_entities missing entities arg",
+          "verdict": "error",
+          "ms": 1,
+          "landed": true,
+          "text": "Cannot read properties of undefined (reading 'filter')",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "A01",
+          "kind": "adversarial",
+          "inv": "INV1",
+          "desc": "delete exact-name does not touch prefix-sibling",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "sibling_intact=true",
+          "extra": {
+            "isolated": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "H2",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "create_relations between entities",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "[\n  {\n    \"from\": \"h2_a\",\n    \"to\": \"h2_b\",\n    \"relationType\": \"knows\"\n  }\n]",
+          "extra": null
+        },
+        {
+          "seed": 11,
+          "id": "A02",
+          "kind": "adversarial",
+          "inv": "INV1",
+          "desc": "delete_observations targets only the named entity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "cross_entity_intact=true",
+          "extra": {
+            "isolated": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "A10",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "delete_relations with wrong type is a no-op",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "wrong_type_noop=true",
+          "extra": {
+            "noop": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "A05",
+          "kind": "adversarial",
+          "inv": "INV2",
+          "desc": "newline/JSON forgery cannot add file lines or entities",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "jsonl_valid=true line_count_ok=true forged_entity=false lines_delta=1",
+          "extra": {
+            "confined": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "A06",
+          "kind": "adversarial",
+          "inv": "INV3",
+          "desc": "hostile observation strings round-trip verbatim",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "verbatim=true line_count_ok=true",
+          "extra": {
+            "verbatim": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "A17",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "deleted backing file silently resets graph",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "silent_empty_reset=true",
+          "extra": {
+            "silent_empty_reset": true
+          }
+        },
+        {
+          "seed": 11,
+          "id": "A04",
+          "kind": "adversarial",
+          "inv": "INV2",
+          "desc": "traversal text in name/obs is data, writes nothing new",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "dir_unchanged=true stray=0 jsonl_valid=true",
+          "extra": {
+            "confined": true
+          }
+        }
+      ],
+      "snapBefore": {
+        "hash": null,
+        "lines": 0,
+        "entities": 0,
+        "relations": 0,
+        "jsonl_valid": true,
+        "line_count_ok": true
+      },
+      "snapAfter": {
+        "hash": "2c399d35019577165c1f6b1a9cbe83fccf80382ae8f1a028c985ec21a368b0f6",
+        "lines": 1,
+        "entities": 1,
+        "relations": 0,
+        "jsonl_valid": true,
+        "line_count_ok": true
+      },
+      "alive": true,
+      "static": {
+        "id": "F1",
+        "kind": "static",
+        "inv": "INV4",
+        "desc": "description marker scan",
+        "tool_description_sha256": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "markers_found": [],
+        "tool_count": 9,
+        "description": "create_entities: Create multiple new entities in the knowledge graph\ncreate_relations: Create multiple new relations between entities in the knowledge graph. Relations should be in active voice\nadd_observations: Add new observations to existing entities in the knowledge graph\ndelete_entities: Delete"
+      }
+    },
+    {
+      "seed": 22,
+      "ops": [
+        {
+          "seed": 22,
+          "id": "A14",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "search_nodes with numeric query",
+          "verdict": "success",
+          "ms": 3,
+          "landed": true,
+          "text": "{\n  \"entities\": [],\n  \"relations\": []\n}",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "A01",
+          "kind": "adversarial",
+          "inv": "INV1",
+          "desc": "delete exact-name does not touch prefix-sibling",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "sibling_intact=true",
+          "extra": {
+            "isolated": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "A02",
+          "kind": "adversarial",
+          "inv": "INV1",
+          "desc": "delete_observations targets only the named entity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "cross_entity_intact=true",
+          "extra": {
+            "isolated": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "A17",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "deleted backing file silently resets graph",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "silent_empty_reset=true",
+          "extra": {
+            "silent_empty_reset": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "H4",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "read_graph returns full graph",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "{\n  \"entities\": [\n    {\n      \"type\": \"entity\",\n      \"name\": \"h4_ent\",\n      \"entityType\": \"person\",\n      \"observations\": []\n    }\n  ],\n  \"relations\": []\n}",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "A08",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "read-only tools do not mutate the file",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "hash_unchanged=true",
+          "extra": {
+            "pure": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "A13",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "add_observations to nonexistent entity",
+          "verdict": "error",
+          "ms": 1,
+          "landed": true,
+          "text": "Entity with name ghost-zz not found",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "A11",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "delete_observations on nonexistent entity (silent?)",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "verdict=success text=Observations deleted successfully",
+          "extra": {
+            "silent_success": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "H8",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "delete_relations removes the relation",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "relation deleted",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "A15",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "unknown tool",
+          "verdict": "error",
+          "ms": 0,
+          "landed": true,
+          "text": "Unknown tool: nonexistent-tool",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "A03",
+          "kind": "adversarial",
+          "inv": "INV1",
+          "desc": "case-differing names are isolated",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "case_isolated=true",
+          "extra": {
+            "isolated": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "A12",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "create_entities missing entities arg",
+          "verdict": "error",
+          "ms": 0,
+          "landed": true,
+          "text": "Cannot read properties of undefined (reading 'filter')",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "A09",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "create_relations with nonexistent endpoints (dangling)",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "tool_verdict=success stored=true endpoints_exist=false",
+          "extra": {
+            "dangling_accepted": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "A16",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "corrupt backing file: fail closed, recover after repair",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "corrupt_read=error corrupt_write=error alive_during=true recovered=true",
+          "extra": {
+            "fail_closed": true,
+            "recovered": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "A06",
+          "kind": "adversarial",
+          "inv": "INV3",
+          "desc": "hostile observation strings round-trip verbatim",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "verbatim=true line_count_ok=true",
+          "extra": {
+            "verbatim": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "H3",
+          "kind": "honest",
+          "inv": "INV3",
+          "desc": "add_observations to existing entity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "[\n  {\n    \"entityName\": \"h3_ent\",\n    \"addedObservations\": [\n      \"h3 obs\"\n    ]\n  }\n]",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "H2",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "create_relations between entities",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "[\n  {\n    \"from\": \"h2_a\",\n    \"to\": \"h2_b\",\n    \"relationType\": \"knows\"\n  }\n]",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "H1",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "create_entities alice",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "[\n  {\n    \"name\": \"h1_alice\",\n    \"entityType\": \"person\",\n    \"observations\": [\n      \"h1 canary\"\n    ]\n  }\n]",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "A05",
+          "kind": "adversarial",
+          "inv": "INV2",
+          "desc": "newline/JSON forgery cannot add file lines or entities",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "jsonl_valid=true line_count_ok=true forged_entity=false lines_delta=1",
+          "extra": {
+            "confined": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "A04",
+          "kind": "adversarial",
+          "inv": "INV2",
+          "desc": "traversal text in name/obs is data, writes nothing new",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "dir_unchanged=true stray=0 jsonl_valid=true",
+          "extra": {
+            "confined": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "H10",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "read_graph shape sanity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "entities=14 relations=2",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "A10",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "delete_relations with wrong type is a no-op",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "wrong_type_noop=true",
+          "extra": {
+            "noop": true
+          }
+        },
+        {
+          "seed": 22,
+          "id": "H9",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "delete_entities removes entity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "entity deleted",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "H5",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "search_nodes finds by observation",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "{\n  \"entities\": [\n    {\n      \"type\": \"entity\",\n      \"name\": \"h5_ent\",\n      \"entityType\": \"person\",\n      \"observations\": [\n        \"h5-unique-canary\"\n      ]\n    }\n  ],\n  \"relations\": []\n}",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "H6",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "open_nodes retrieves named node",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "{\n  \"entities\": [\n    {\n      \"type\": \"entity\",\n      \"name\": \"h6_ent\",\n      \"entityType\": \"person\",\n      \"observations\": [\n        \"h6 obs\"\n      ]\n    }\n  ],\n  \"relations\": []\n}",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "H7",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "delete_observations removes one obs",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "obs deleted selectively",
+          "extra": null
+        },
+        {
+          "seed": 22,
+          "id": "A07",
+          "kind": "adversarial",
+          "inv": "INV3",
+          "desc": "hostile relationType round-trips verbatim",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "verbatim=true line_count_ok=true",
+          "extra": {
+            "verbatim": true
+          }
+        }
+      ],
+      "snapBefore": {
+        "hash": null,
+        "lines": 0,
+        "entities": 0,
+        "relations": 0,
+        "jsonl_valid": true,
+        "line_count_ok": true
+      },
+      "snapAfter": {
+        "hash": "f1c92390b7a40482474fec148705c72b4c38a43b9ae3ada299ded04eb69f754f",
+        "lines": 25,
+        "entities": 21,
+        "relations": 4,
+        "jsonl_valid": true,
+        "line_count_ok": true
+      },
+      "alive": true,
+      "static": {
+        "id": "F1",
+        "kind": "static",
+        "inv": "INV4",
+        "desc": "description marker scan",
+        "tool_description_sha256": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "markers_found": [],
+        "tool_count": 9,
+        "description": "create_entities: Create multiple new entities in the knowledge graph\ncreate_relations: Create multiple new relations between entities in the knowledge graph. Relations should be in active voice\nadd_observations: Add new observations to existing entities in the knowledge graph\ndelete_entities: Delete"
+      }
+    },
+    {
+      "seed": 33,
+      "ops": [
+        {
+          "seed": 33,
+          "id": "H9",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "delete_entities removes entity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "entity deleted",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "H5",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "search_nodes finds by observation",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "{\n  \"entities\": [\n    {\n      \"type\": \"entity\",\n      \"name\": \"h5_ent\",\n      \"entityType\": \"person\",\n      \"observations\": [\n        \"h5-unique-canary\"\n      ]\n    }\n  ],\n  \"relations\": []\n}",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A13",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "add_observations to nonexistent entity",
+          "verdict": "error",
+          "ms": 1,
+          "landed": true,
+          "text": "Entity with name ghost-zz not found",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A12",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "create_entities missing entities arg",
+          "verdict": "error",
+          "ms": 1,
+          "landed": true,
+          "text": "Cannot read properties of undefined (reading 'filter')",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A17",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "deleted backing file silently resets graph",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "silent_empty_reset=true",
+          "extra": {
+            "silent_empty_reset": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "H10",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "read_graph shape sanity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "entities=0 relations=0",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A07",
+          "kind": "adversarial",
+          "inv": "INV3",
+          "desc": "hostile relationType round-trips verbatim",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "verbatim=true line_count_ok=true",
+          "extra": {
+            "verbatim": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "H3",
+          "kind": "honest",
+          "inv": "INV3",
+          "desc": "add_observations to existing entity",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "[\n  {\n    \"entityName\": \"h3_ent\",\n    \"addedObservations\": [\n      \"h3 obs\"\n    ]\n  }\n]",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A14",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "search_nodes with numeric query",
+          "verdict": "error",
+          "ms": 0,
+          "landed": true,
+          "text": "query.toLowerCase is not a function",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "H2",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "create_relations between entities",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "[\n  {\n    \"from\": \"h2_a\",\n    \"to\": \"h2_b\",\n    \"relationType\": \"knows\"\n  }\n]",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "H7",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "delete_observations removes one obs",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "obs deleted selectively",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "H8",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "delete_relations removes the relation",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "relation deleted",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A04",
+          "kind": "adversarial",
+          "inv": "INV2",
+          "desc": "traversal text in name/obs is data, writes nothing new",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "dir_unchanged=true stray=0 jsonl_valid=true",
+          "extra": {
+            "confined": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "A16",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "corrupt backing file: fail closed, recover after repair",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "corrupt_read=error corrupt_write=error alive_during=true recovered=true",
+          "extra": {
+            "fail_closed": true,
+            "recovered": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "H4",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "read_graph returns full graph",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "{\n  \"entities\": [\n    {\n      \"type\": \"entity\",\n      \"name\": \"rA7\",\n      \"entityType\": \"person\",\n      \"observations\": []\n    },\n    {\n      \"type\": \"entity\",\n      \"name\": \"rB7\",\n      \"entityType\": \"person\",\n      \"observations\": []\n    },\n    {\n      \"type\": \"entity\",\n      \"name\": \"h3_ent\",\n      \"entityType\": \"person\",\n      \"observations\": [\n        \"h3 obs\"\n      ]\n    },\n    {\n      \"type\": \"entity\",\n      \"name\": \"h2_a\",\n      \"entityType\": \"person\",\n      \"observations\": []\n    },\n    {\n      \"type\": \"entity\",\n      \"name\": \"h2_b\",\n      \"entityType\": \"person\",\n      \"observations\"",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A03",
+          "kind": "adversarial",
+          "inv": "INV1",
+          "desc": "case-differing names are isolated",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "case_isolated=true",
+          "extra": {
+            "isolated": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "A11",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "delete_observations on nonexistent entity (silent?)",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "verdict=success text=Observations deleted successfully",
+          "extra": {
+            "silent_success": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "A08",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "read-only tools do not mutate the file",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "hash_unchanged=true",
+          "extra": {
+            "pure": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "A15",
+          "kind": "adversarial",
+          "inv": "INV5",
+          "desc": "unknown tool",
+          "verdict": "error",
+          "ms": 1,
+          "landed": true,
+          "text": "Unknown tool: nonexistent-tool",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A02",
+          "kind": "adversarial",
+          "inv": "INV1",
+          "desc": "delete_observations targets only the named entity",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "cross_entity_intact=true",
+          "extra": {
+            "isolated": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "H6",
+          "kind": "honest",
+          "inv": "INV4",
+          "desc": "open_nodes retrieves named node",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "{\n  \"entities\": [\n    {\n      \"type\": \"entity\",\n      \"name\": \"h6_ent\",\n      \"entityType\": \"person\",\n      \"observations\": [\n        \"h6 obs\"\n      ]\n    }\n  ],\n  \"relations\": []\n}",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A09",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "create_relations with nonexistent endpoints (dangling)",
+          "verdict": "success",
+          "ms": 2,
+          "landed": true,
+          "text": "tool_verdict=success stored=true endpoints_exist=false",
+          "extra": {
+            "dangling_accepted": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "A01",
+          "kind": "adversarial",
+          "inv": "INV1",
+          "desc": "delete exact-name does not touch prefix-sibling",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "sibling_intact=true",
+          "extra": {
+            "isolated": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "H1",
+          "kind": "honest",
+          "inv": "INV1",
+          "desc": "create_entities alice",
+          "verdict": "success",
+          "ms": 1,
+          "landed": true,
+          "text": "[\n  {\n    \"name\": \"h1_alice\",\n    \"entityType\": \"person\",\n    \"observations\": [\n      \"h1 canary\"\n    ]\n  }\n]",
+          "extra": null
+        },
+        {
+          "seed": 33,
+          "id": "A06",
+          "kind": "adversarial",
+          "inv": "INV3",
+          "desc": "hostile observation strings round-trip verbatim",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "verbatim=true line_count_ok=true",
+          "extra": {
+            "verbatim": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "A10",
+          "kind": "adversarial",
+          "inv": "INV4",
+          "desc": "delete_relations with wrong type is a no-op",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "wrong_type_noop=true",
+          "extra": {
+            "noop": true
+          }
+        },
+        {
+          "seed": 33,
+          "id": "A05",
+          "kind": "adversarial",
+          "inv": "INV2",
+          "desc": "newline/JSON forgery cannot add file lines or entities",
+          "verdict": "success",
+          "ms": 0,
+          "landed": true,
+          "text": "jsonl_valid=true line_count_ok=true forged_entity=false lines_delta=1",
+          "extra": {
+            "confined": true
+          }
+        }
+      ],
+      "snapBefore": {
+        "hash": null,
+        "lines": 0,
+        "entities": 0,
+        "relations": 0,
+        "jsonl_valid": true,
+        "line_count_ok": true
+      },
+      "snapAfter": {
+        "hash": "b5e2ba8bfc78e6d954956979404b6d89ff46afb50ba195d589e591f662da8f83",
+        "lines": 27,
+        "entities": 23,
+        "relations": 4,
+        "jsonl_valid": true,
+        "line_count_ok": true
+      },
+      "alive": true,
+      "static": {
+        "id": "F1",
+        "kind": "static",
+        "inv": "INV4",
+        "desc": "description marker scan",
+        "tool_description_sha256": "29cc1021f340dd41c4fb08a68e11a0492207ac7c855940f4ace8e3fa8a677380",
+        "markers_found": [],
+        "tool_count": 9,
+        "description": "create_entities: Create multiple new entities in the knowledge graph\ncreate_relations: Create multiple new relations between entities in the knowledge graph. Relations should be in active voice\nadd_observations: Add new observations to existing entities in the knowledge graph\ndelete_entities: Delete"
+      }
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV1",
+      "statement": "adversarial input never leaks or corrupts unrelated entities/relations",
+      "status": "held"
+    },
+    {
+      "id": "INV2",
+      "statement": "no tool writes outside the fixed memory.json; hostile name/content is data, never a path",
+      "status": "held"
+    },
+    {
+      "id": "INV3",
+      "statement": "hostile observation/relation content is stored and retrieved verbatim without altering graph semantics",
+      "status": "held"
+    },
+    {
+      "id": "INV4",
+      "statement": "read-only tools never mutate state; relations require existing endpoints per the advertised description",
+      "status": "not_held"
+    },
+    {
+      "id": "INV5",
+      "statement": "malformed inputs fail closed; server stays alive; corrupt backing file errors then recovers",
+      "status": "not_held"
+    }
+  ],
+  "findings": [
+    {
+      "severity": "medium",
+      "inv": "INV4",
+      "title": "create_relations accepts relations between nonexistent entities (dangling)",
+      "detail": "A09: create_relations {from:\"dangleA\", to:\"dangleB\", relationType:\"haunts\"} returned success and the relation persisted in read_graph on every seed, while open_nodes confirms neither endpoint exists. The tool is described as \"Create multiple new relations between entities in the knowledge graph\" — it enforces no referential integrity, so a client reading the graph receives relations pointing at nothing. Agents building on graph structure cannot trust relation endpoints."
+    },
+    {
+      "severity": "info",
+      "inv": "INV5",
+      "title": "search_nodes input-type validation is order-dependent (numeric query)",
+      "detail": "A14: search_nodes {query: 123} errored on 2 seed(s) (\"query.toLowerCase is not a function\") but returned success with an empty graph on 1 seed(s). Mechanism, verified by isolated reproduction: on a non-empty graph the filter callback invokes query.toLowerCase() and throws; on an empty graph [].filter never invokes the callback, so the TypeError is masked and the malformed input silently succeeds. No state corruption or crash either way — inconsistent validation, not an escape."
+    },
+    {
+      "severity": "info",
+      "inv": "INV4",
+      "title": "delete_observations on a nonexistent entity silently succeeds",
+      "detail": "A11: \"Observations deleted successfully\" for ghost-entity-zz. Asymmetric with add_observations, which errors \"Entity with name X not found\" for the same missing entity. Silent success hides caller mistakes."
+    },
+    {
+      "severity": "info",
+      "inv": "INV5",
+      "title": "Deleted backing file silently resets the graph to empty",
+      "detail": "A17: with memory.json absent, read_graph returns an empty graph with success — the server cannot distinguish first-run from total data loss. There is no integrity check, backup, or warning. Fail-closed on corruption (A16) is genuine, but deletion is a silent full reset."
+    },
+    {
+      "severity": "info",
+      "inv": "INV5",
+      "title": "create_entities silently skips duplicate names",
+      "detail": "Probed during research: re-creating an existing entity name returns success with an empty created list (no error, no overwrite). Idempotent, not a vulnerability — callers should not assume the entity was (re)created."
+    }
+  ],
+  "vacuity": {
+    "honest_ok": 30,
+    "honest_minimum": 10,
+    "adversarial_landed": 51,
+    "adversarial_total": 51,
+    "server_alive_end": true,
+    "pass": true
+  },
+  "verdict": "fail",
+  "totals": {
+    "operations": 81,
+    "honest_ok": 30,
+    "adversarial_landed": 51,
+    "adversarial_total": 51,
+    "seeds": 3
+  }
+}

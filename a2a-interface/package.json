@@ -1,0 +1,1 @@
+{"description":"SkillProof machine-to-machine verification request interface (reference implementation)","engines":{"node":">=18"},"name":"skillproof-a2a","private":true,"scripts":{"demo":"SKILLPROOF_DEMO=1 node server.js","start":"node server.js","test":"node test.js"},"version":"1.0.0"}

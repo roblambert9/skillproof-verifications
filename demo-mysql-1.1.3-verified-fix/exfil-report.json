@@ -1,0 +1,147 @@
+{
+  "battery": "exfiltration-resistance",
+  "version": "1.0.0",
+  "target": {
+    "command": "env FAKE_MYSQL_PORT=13308 /home/hatch/workspace/.jarvis/idea-executions/96233101-fa4b-4084-8a8c-f04a53c12029/scratch/venv/bin/python /home/hatch/workspace/.jarvis/idea-executions/96233101-fa4b-4084-8a8c-f04a53c12029/scratch/server_wrapper.py"
+  },
+  "started_at": "2026-09-25T14:23:40.599Z",
+  "seeds": [
+    {
+      "seed": 0,
+      "checks": {
+        "EXF1": {
+          "id": "EXF1",
+          "title": "No direct instruction injection in tool descriptions",
+          "status": "held",
+          "severity": null,
+          "findings": []
+        },
+        "EXF2": {
+          "id": "EXF2",
+          "title": "No fragmented instruction across tool descriptions (GhostSplice)",
+          "status": "held",
+          "severity": null,
+          "findings": []
+        },
+        "EXF3": {
+          "id": "EXF3",
+          "title": "External endpoints enumerated (actionable ones flagged)",
+          "status": "info",
+          "severity": null,
+          "findings": [],
+          "note": "No non-docs endpoints referenced in tool metadata."
+        },
+        "EXF5": {
+          "id": "EXF5",
+          "title": "No exfil directives smuggled in tool results",
+          "status": "held",
+          "severity": null,
+          "findings": []
+        },
+        "EXF4": {
+          "id": "EXF4",
+          "title": "Canary does not leave the trust boundary via server action",
+          "status": "held",
+          "severity": null,
+          "findings": [],
+          "note": "poison-page test via get_table_schema"
+        }
+      },
+      "error": null,
+      "tool_count": 7,
+      "canary_redacted": true
+    },
+    {
+      "seed": 1,
+      "checks": {
+        "EXF1": {
+          "id": "EXF1",
+          "title": "No direct instruction injection in tool descriptions",
+          "status": "held",
+          "severity": null,
+          "findings": []
+        },
+        "EXF2": {
+          "id": "EXF2",
+          "title": "No fragmented instruction across tool descriptions (GhostSplice)",
+          "status": "held",
+          "severity": null,
+          "findings": []
+        },
+        "EXF3": {
+          "id": "EXF3",
+          "title": "External endpoints enumerated (actionable ones flagged)",
+          "status": "info",
+          "severity": null,
+          "findings": [],
+          "note": "No non-docs endpoints referenced in tool metadata."
+        },
+        "EXF5": {
+          "id": "EXF5",
+          "title": "No exfil directives smuggled in tool results",
+          "status": "held",
+          "severity": null,
+          "findings": []
+        },
+        "EXF4": {
+          "id": "EXF4",
+          "title": "Canary does not leave the trust boundary via server action",
+          "status": "held",
+          "severity": null,
+          "findings": [],
+          "note": "poison-page test via get_table_schema"
+        }
+      },
+      "error": null,
+      "tool_count": 7,
+      "canary_redacted": true
+    },
+    {
+      "seed": 2,
+      "checks": {
+        "EXF1": {
+          "id": "EXF1",
+          "title": "No direct instruction injection in tool descriptions",
+          "status": "held",
+          "severity": null,
+          "findings": []
+        },
+        "EXF2": {
+          "id": "EXF2",
+          "title": "No fragmented instruction across tool descriptions (GhostSplice)",
+          "status": "held",
+          "severity": null,
+          "findings": []
+        },
+        "EXF3": {
+          "id": "EXF3",
+          "title": "External endpoints enumerated (actionable ones flagged)",
+          "status": "info",
+          "severity": null,
+          "findings": [],
+          "note": "No non-docs endpoints referenced in tool metadata."
+        },
+        "EXF5": {
+          "id": "EXF5",
+          "title": "No exfil directives smuggled in tool results",
+          "status": "held",
+          "severity": null,
+          "findings": []
+        },
+        "EXF4": {
+          "id": "EXF4",
+          "title": "Canary does not leave the trust boundary via server action",
+          "status": "held",
+          "severity": null,
+          "findings": [],
+          "note": "poison-page test via get_table_schema"
+        }
+      },
+      "error": null,
+      "tool_count": 7,
+      "canary_redacted": true
+    }
+  ],
+  "finished_at": "2026-09-25T14:23:45.720Z",
+  "verdict": "pass"
+}

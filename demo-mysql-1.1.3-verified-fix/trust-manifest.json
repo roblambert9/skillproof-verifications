@@ -1,0 +1,225 @@
+{
+  "manifest_version": "1.0",
+  "subject": {
+    "skill_id": "awslabs.mysql-mcp-server",
+    "display_name": "awslabs.mysql-mcp-server",
+    "version": "1.1.3",
+    "source": "https://pypi.org/project/awslabs.mysql-mcp-server/1.1.3/",
+    "code_hash": "sha256:ef5086e900199438c6830d32c03cf8e8ef2ac5bfb68b934c08a6cddb34fd0f17",
+    "code_hash_convention": "sha256 of the PyPI wheel file bytes as downloaded 2026-09-25"
+  },
+  "extends_corpus_entry": {
+    "entry": "#08",
+    "subject_version": "1.0.23",
+    "verified": "2026-09-21",
+    "relationship": "same skill_id; newer patched build; expanded battery covering the 1.1.x CWE-184 hardening wave #08 did not test"
+  },
+  "disclosure": {
+    "cve": "CVE-2026-85788",
+    "ghsa": "GHSA-x25m-ph3m-3r9q",
+    "bulletin": "AWS 2026-103-AWS",
+    "summary": "Read-only enforcement in <=1.0.21 circumventable via SQL inline comments; fixed in 1.0.23. This manifest verifies the fix still holds on 1.1.3 and verifies the 1.1.x second hardening wave (statement-anchored verbs, #-comment stripping, both-mode rejection of side-effecting functions and security-sensitive session variables, fail-closed AWS endpoint validation)."
+  },
+  "verifier": {
+    "id": "skillproof-verifier/2026-09-25",
+    "methodology": "skillproof-verifier: invariants-before-execution, anti-vacuity gate, debunk-first, exfil-battery EXF1-EXF5, two-pass (read_only + write_mode)",
+    "issuer_key_id": "skillproof-persistent-verifier-1",
+    "public_key": "31e0f9038b9a4fe8c540ea353352b739a610db1247b6451a804e4bc88b1db70b"
+  },
+  "scope": {
+    "tools_tested": [
+      "connect_to_database",
+      "create_cluster",
+      "get_database_connection_info",
+      "get_job_status",
+      "get_table_schema",
+      "is_database_connected",
+      "run_query"
+    ],
+    "connection_method": "mysqlwire",
+    "not_tested": [
+      "rdsapi connection method (requires AWS; gate code is shared, path behavior inferred)",
+      "cluster endpoint resolver internal_resolve_cluster_endpoint (no cluster)"
+    ],
+    "credential_shims": [
+      "server.internal_get_instance_properties -> fixture address/port (1.1.3 requires Endpoint.Address; fail-closed validation observed)",
+      "AsyncmyPoolConnection._get_credentials_from_secret -> test creds"
+    ],
+    "shim_boundary": "credential plumbing only; run_query's read-only gate (mutable_sql_detector) and injection filter unmodified"
+  },
+  "invariants": [
+    {
+      "id": "INV-RO-1",
+      "class": "authorization",
+      "statement": "CVE-2026-85788 regression: read-only mode blocks mutating statements obfuscated with SQL inline comments (versioned /*!...*/, /**/ fragmentation, leading/trailing comments) \u2014 the 1.0.23 fix still holds on 1.1.3.",
+      "operations_tested": {
+        "read_only": 30,
+        "write_mode": 0
+      },
+      "status": "held"
+    },
+    {
+      "id": "INV-RO-2",
+      "class": "authorization",
+      "statement": "Statement-leading mutating verbs are blocked in read-only mode (CWE-184 follow-up, new in 1.1.x): DO, REPLACE-leading, BEGIN/START/COMMIT/ROLLBACK/SAVEPOINT/RELEASE/XA, CHANGE/PURGE/STOP/BINLOG, CLONE/RESTART/SHUTDOWN, USE, CACHE/LOAD INDEX, IMPORT.",
+      "operations_tested": {
+        "read_only": 45,
+        "write_mode": 0
+      },
+      "status": "held"
+    },
+    {
+      "id": "INV-RO-3",
+      "class": "authorization",
+      "statement": "Comment-hidden leading verbs are blocked: no-space `#` line comments, `/* */`, `--` prefixes hiding a statement-leading verb (the _strip_mysql_hash_comments fix).",
+      "operations_tested": {
+        "read_only": 12,
+        "write_mode": 0
+      },
+      "status": "held"
+    },
+    {
+      "id": "INV-RO-4",
+      "class": "authorization",
+      "statement": "Side-effecting functions are rejected even in read-shaped queries: GET_LOCK/RELEASE_LOCK/SYS_EXEC/MASTER_POS_WAIT/SLEEP in SELECT form, LAST_INSERT_ID(expr) \u2014 in both read and write mode.",
+      "operations_tested": {
+        "read_only": 18,
+        "write_mode": 18
+      },
+      "status": "held"
+    },
+    {
+      "id": "INV-RO-5",
+      "class": "authorization",
+      "statement": "Security-sensitive session variables are rejected (SET sql_log_bin/foreign_key_checks/unique_checks = 0 and variants) \u2014 in both read and write mode.",
+      "operations_tested": {
+        "read_only": 15,
+        "write_mode": 15
+      },
+      "status": "held"
+    },
+    {
+      "id": "INV-RO-6",
+      "class": "authorization",
+      "statement": "Plain (non-obfuscated) mutating statements are blocked in read-only mode and never reach the database (regression from #08).",
+      "operations_tested": {
+        "read_only": 36,
+        "write_mode": 0
+      },
+      "status": "held"
+    },
+    {
+      "id": "INV-READ-1",
+      "class": "data_flow",
+      "statement": "Honest read-only statements execute correctly and return rows through the database.",
+      "operations_tested": {
+        "read_only": 33,
+        "write_mode": 33
+      },
+      "status": "held"
+    },
+    {
+      "id": "INV-READ-2",
+      "class": "data_flow",
+      "statement": "No false-positive over-blocking: benign reads the anchored scan was designed to allow (SELECT start.., SELECT REPLACE(..), USE INDEX hint, 'things to do' literal, get_lock column, LAST_INSERT_ID()) execute.",
+      "operations_tested": {
+        "read_only": 18,
+        "write_mode": 18
+      },
+      "status": "held"
+    },
+    {
+      "id": "INV-INJ-1",
+      "class": "authorization",
+      "statement": "Injection-shaped queries (tautologies, UNION exfil, stacked statements, INTO OUTFILE/DUMPFILE, LOAD_FILE, time probes) are rejected and never reach the database.",
+      "operations_tested": {
+        "read_only": 33,
+        "write_mode": 0
+      },
+      "status": "held"
+    },
+    {
+      "id": "INV-EXF-1",
+      "class": "data_flow",
+      "statement": "Exfiltration battery EXF1-EXF5: tool metadata and results contain no exfiltration directives; canary values do not leave the trust boundary.",
+      "operations_tested": {
+        "read_only": 15,
+        "write_mode": 0
+      },
+      "status": "held"
+    }
+  ],
+  "harness": {
+    "hash": "sha256:8cff4624afbdda9a2d85a7f1ac9b990c91151a39ab8b7406d4e217dd46bd8d7b",
+    "hash_convention": "sha256 of concatenated driver.py + server_wrapper.py + fake_mysql.py",
+    "anti_vacuity": {
+      "read_only": {
+        "honest_minimum": 10,
+        "honest_ok_min_across_seeds": 17,
+        "adversarial_all_landed": true,
+        "server_alive_at_end": true,
+        "pass": true
+      },
+      "write_mode": {
+        "honest_minimum": 10,
+        "honest_ok_min_across_seeds": 17,
+        "adversarial_all_landed": true,
+        "server_alive_at_end": true,
+        "pass": true
+      }
+    },
+    "seeds": 3,
+    "totals": {
+      "read_only": {
+        "operations": 240,
+        "honest_ok": 51,
+        "adversarial_landed": 189,
+        "adversarial_blocked": 189,
+        "unexpected": 0
+      },
+      "write_mode": {
+        "operations": 84,
+        "honest_ok": 51,
+        "adversarial_landed": 33,
+        "adversarial_blocked": 33,
+        "unexpected": 0
+      }
+    },
+    "exfil_battery": {
+      "verdict": "pass",
+      "per_seed": []
+    }
+  },
+  "findings": [
+    {
+      "id": "NOTE-001",
+      "severity": "info",
+      "title": "code_hash convention documented (differs from #08)",
+      "description": "#08's code_hash (sha256:398052f5...) matches neither the 1.0.23 wheel bytes, its sdist, nor the extracted detector module \u2014 convention unrecoverable. This manifest pins sha256 of the exact PyPI wheel bytes tested and documents the convention in RESULTS.md for reproducibility."
+    },
+    {
+      "id": "NOTE-002",
+      "severity": "info",
+      "title": "no-false-positive property for ';' in string literals relies on stacked-queries rule",
+      "description": "Per the vendor's own code comment, a ';' inside a string literal matches the statement-start pattern's ';' branch; the 'no false positive' property there relies on the stacked-queries SUSPICIOUS_PATTERNS rule staying at least as strict. Not executed (blocked by that rule by design); recorded so a future relaxation is visible."
+    },
+    {
+      "id": "NOTE-003",
+      "severity": "info",
+      "title": "SET rejected wholesale in read-only mode (deliberate trade-off)",
+      "description": "SET as a general keyword is rejected in read-only mode, including benign forms (SET @var, SET NAMES, SET sql_mode). The vendor documents this as a deliberate closed-by-construction trade-off. Confirmed behaviorally; not a finding."
+    }
+  ],
+  "verdict": "pass_with_notes",
+  "validity": {
+    "issued_at": "2026-09-25T00:00:00Z",
+    "expires_at": "2026-12-24T00:00:00Z",
+    "valid_for_version": "1.1.3",
+    "revoked": false
+  },
+  "signature": {
+    "algorithm": "Ed25519",
+    "value": "08038b19949816379f7a051cb0e1468c68851504acbf6f365411a233fe590143d9503037ebfcf1dc95635f62c87192b4a9c9b578659bc98e0287e3cc7afee301",
+    "signed_payload": "{\"disclosure\":{\"bulletin\":\"AWS 2026-103-AWS\",\"cve\":\"CVE-2026-85788\",\"ghsa\":\"GHSA-x25m-ph3m-3r9q\",\"summary\":\"Read-only enforcement in <=1.0.21 circumventable via SQL inline comments; fixed in 1.0.23. This manifest verifies the fix still holds on 1.1.3 and verifies the 1.1.x second hardening wave (statement-anchored verbs, #-comment stripping, both-mode rejection of side-effecting functions and security-sensitive session variables, fail-closed AWS endpoint validation).\"},\"extends_corpus_entry\":{\"entry\":\"#08\",\"relationship\":\"same skill_id; newer patched build; expanded battery covering the 1.1.x CWE-184 hardening wave #08 did not test\",\"subject_version\":\"1.0.23\",\"verified\":\"2026-09-21\"},\"findings\":[{\"description\":\"#08's code_hash (sha256:398052f5...) matches neither the 1.0.23 wheel bytes, its sdist, nor the extracted detector module \\u2014 convention unrecoverable. This manifest pins sha256 of the exact PyPI wheel bytes tested and documents the convention in RESULTS.md for reproducibility.\",\"id\":\"NOTE-001\",\"severity\":\"info\",\"title\":\"code_hash convention documented (differs from #08)\"},{\"description\":\"Per the vendor's own code comment, a ';' inside a string literal matches the statement-start pattern's ';' branch; the 'no false positive' property there relies on the stacked-queries SUSPICIOUS_PATTERNS rule staying at least as strict. Not executed (blocked by that rule by design); recorded so a future relaxation is visible.\",\"id\":\"NOTE-002\",\"severity\":\"info\",\"title\":\"no-false-positive property for ';' in string literals relies on stacked-queries rule\"},{\"description\":\"SET as a general keyword is rejected in read-only mode, including benign forms (SET @var, SET NAMES, SET sql_mode). The vendor documents this as a deliberate closed-by-construction trade-off. Confirmed behaviorally; not a finding.\",\"id\":\"NOTE-003\",\"severity\":\"info\",\"title\":\"SET rejected wholesale in read-only mode (deliberate trade-off)\"}],\"harness\":{\"anti_vacuity\":{\"read_only\":{\"adversarial_all_landed\":true,\"honest_minimum\":10,\"honest_ok_min_across_seeds\":17,\"pass\":true,\"server_alive_at_end\":true},\"write_mode\":{\"adversarial_all_landed\":true,\"honest_minimum\":10,\"honest_ok_min_across_seeds\":17,\"pass\":true,\"server_alive_at_end\":true}},\"exfil_battery\":{\"per_seed\":[],\"verdict\":\"pass\"},\"hash\":\"sha256:8cff4624afbdda9a2d85a7f1ac9b990c91151a39ab8b7406d4e217dd46bd8d7b\",\"hash_convention\":\"sha256 of concatenated driver.py + server_wrapper.py + fake_mysql.py\",\"seeds\":3,\"totals\":{\"read_only\":{\"adversarial_blocked\":189,\"adversarial_landed\":189,\"honest_ok\":51,\"operations\":240,\"unexpected\":0},\"write_mode\":{\"adversarial_blocked\":33,\"adversarial_landed\":33,\"honest_ok\":51,\"operations\":84,\"unexpected\":0}}},\"invariants\":[{\"class\":\"authorization\",\"id\":\"INV-RO-1\",\"operations_tested\":{\"read_only\":30,\"write_mode\":0},\"statement\":\"CVE-2026-85788 regression: read-only mode blocks mutating statements obfuscated with SQL inline comments (versioned /*!...*/, /**/ fragmentation, leading/trailing comments) \\u2014 the 1.0.23 fix still holds on 1.1.3.\",\"status\":\"held\"},{\"class\":\"authorization\",\"id\":\"INV-RO-2\",\"operations_tested\":{\"read_only\":45,\"write_mode\":0},\"statement\":\"Statement-leading mutating verbs are blocked in read-only mode (CWE-184 follow-up, new in 1.1.x): DO, REPLACE-leading, BEGIN/START/COMMIT/ROLLBACK/SAVEPOINT/RELEASE/XA, CHANGE/PURGE/STOP/BINLOG, CLONE/RESTART/SHUTDOWN, USE, CACHE/LOAD INDEX, IMPORT.\",\"status\":\"held\"},{\"class\":\"authorization\",\"id\":\"INV-RO-3\",\"operations_tested\":{\"read_only\":12,\"write_mode\":0},\"statement\":\"Comment-hidden leading verbs are blocked: no-space `#` line comments, `/* */`, `--` prefixes hiding a statement-leading verb (the _strip_mysql_hash_comments fix).\",\"status\":\"held\"},{\"class\":\"authorization\",\"id\":\"INV-RO-4\",\"operations_tested\":{\"read_only\":18,\"write_mode\":18},\"statement\":\"Side-effecting functions are rejected even in read-shaped queries: GET_LOCK/RELEASE_LOCK/SYS_EXEC/MASTER_POS_WAIT/SLEEP in SELECT form, LAST_INSERT_ID(expr) \\u2014 in both read and write mode.\",\"status\":\"held\"},{\"class\":\"authorization\",\"id\":\"INV-RO-5\",\"operations_tested\":{\"read_only\":15,\"write_mode\":15},\"statement\":\"Security-sensitive session variables are rejected (SET sql_log_bin/foreign_key_checks/unique_checks = 0 and variants) \\u2014 in both read and write mode.\",\"status\":\"held\"},{\"class\":\"authorization\",\"id\":\"INV-RO-6\",\"operations_tested\":{\"read_only\":36,\"write_mode\":0},\"statement\":\"Plain (non-obfuscated) mutating statements are blocked in read-only mode and never reach the database (regression from #08).\",\"status\":\"held\"},{\"class\":\"data_flow\",\"id\":\"INV-READ-1\",\"operations_tested\":{\"read_only\":33,\"write_mode\":33},\"statement\":\"Honest read-only statements execute correctly and return rows through the database.\",\"status\":\"held\"},{\"class\":\"data_flow\",\"id\":\"INV-READ-2\",\"operations_tested\":{\"read_only\":18,\"write_mode\":18},\"statement\":\"No false-positive over-blocking: benign reads the anchored scan was designed to allow (SELECT start.., SELECT REPLACE(..), USE INDEX hint, 'things to do' literal, get_lock column, LAST_INSERT_ID()) execute.\",\"status\":\"held\"},{\"class\":\"authorization\",\"id\":\"INV-INJ-1\",\"operations_tested\":{\"read_only\":33,\"write_mode\":0},\"statement\":\"Injection-shaped queries (tautologies, UNION exfil, stacked statements, INTO OUTFILE/DUMPFILE, LOAD_FILE, time probes) are rejected and never reach the database.\",\"status\":\"held\"},{\"class\":\"data_flow\",\"id\":\"INV-EXF-1\",\"operations_tested\":{\"read_only\":15,\"write_mode\":0},\"statement\":\"Exfiltration battery EXF1-EXF5: tool metadata and results contain no exfiltration directives; canary values do not leave the trust boundary.\",\"status\":\"held\"}],\"manifest_version\":\"1.0\",\"scope\":{\"connection_method\":\"mysqlwire\",\"credential_shims\":[\"server.internal_get_instance_properties -> fixture address/port (1.1.3 requires Endpoint.Address; fail-closed validation observed)\",\"AsyncmyPoolConnection._get_credentials_from_secret -> test creds\"],\"not_tested\":[\"rdsapi connection method (requires AWS; gate code is shared, path behavior inferred)\",\"cluster endpoint resolver internal_resolve_cluster_endpoint (no cluster)\"],\"shim_boundary\":\"credential plumbing only; run_query's read-only gate (mutable_sql_detector) and injection filter unmodified\",\"tools_tested\":[\"connect_to_database\",\"create_cluster\",\"get_database_connection_info\",\"get_job_status\",\"get_table_schema\",\"is_database_connected\",\"run_query\"]},\"subject\":{\"code_hash\":\"sha256:ef5086e900199438c6830d32c03cf8e8ef2ac5bfb68b934c08a6cddb34fd0f17\",\"code_hash_convention\":\"sha256 of the PyPI wheel file bytes as downloaded 2026-09-25\",\"display_name\":\"awslabs.mysql-mcp-server\",\"skill_id\":\"awslabs.mysql-mcp-server\",\"source\":\"https://pypi.org/project/awslabs.mysql-mcp-server/1.1.3/\",\"version\":\"1.1.3\"},\"validity\":{\"expires_at\":\"2026-12-24T00:00:00Z\",\"issued_at\":\"2026-09-25T00:00:00Z\",\"revoked\":false,\"valid_for_version\":\"1.1.3\"},\"verdict\":\"pass_with_notes\",\"verifier\":{\"id\":\"skillproof-verifier/2026-09-25\",\"issuer_key_id\":\"skillproof-persistent-verifier-1\",\"methodology\":\"skillproof-verifier: invariants-before-execution, anti-vacuity gate, debunk-first, exfil-battery EXF1-EXF5, two-pass (read_only + write_mode)\",\"public_key\":\"31e0f9038b9a4fe8c540ea353352b739a610db1247b6451a804e4bc88b1db70b\"}}"
+  }
+}

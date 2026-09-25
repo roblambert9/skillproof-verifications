@@ -50,3 +50,4 @@ node harness/verify-manifest.mjs # standalone Ed25519 check (no network needed)
 
 *Services: Sprint \$500 / Standard \$1,500 / Continuous \$300/mo. Don't trust the badge â€” re-run the harness.*
 
+

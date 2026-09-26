@@ -30,6 +30,7 @@ a{color:#58a6ff}
 <tr><td>03</td><td>MCP Postgres Server <span class="tag">v0.6.2</span></td><td class="fail">FAIL</td><td>96 ops · 78 adversarial</td><td>Stacked COMMIT escaped the read-only transaction; persistent write landed.</td><td><a href="https://github.com/roblambert9/skillproof-verifications/tree/main/demo-postgres">manifest</a></td></tr>
 <tr><td>04</td><td>MCP SQLite Server <span class="tag">v0.6.2</span></td><td class="fail">FAIL</td><td>81 ops · 60 adversarial</td><td>VACUUM INTO is an unrestricted file-write primitive via write-query.</td><td><a href="https://github.com/roblambert9/skillproof-verifications/tree/main/demo-sqlite">manifest</a></td></tr>
 <tr><td>07</td><td>MCP Memory Server <span class="tag">v0.6.2</span></td><td class="fail">FAIL</td><td>81 ops · 51 adversarial</td><td>create_relations accepts relations between nonexistent entities.</td><td><a href="https://github.com/roblambert9/skillproof-verifications/tree/main/demo-memory">manifest</a></td></tr>
+<tr><td>08-EXT</td><td>AWS Labs MySQL MCP Server <span class="tag">v1.1.3</span></td><td class="passnotes">PASS*</td><td>324 ops · 222 adversarial</td><td>CVE-2026-85788 verified fixed. Read-only gate and injection filter held across 10/10 invariants (extends #08).</td><td><a href="https://github.com/roblambert9/skillproof-verifications/tree/main/demo-mysql-1.1.3-verified-fix">manifest</a></td></tr>
 </table>
 <p class="sub">*PASS with notes. Corpus: 4 of 5 official MCP servers FAIL their advertised safety invariants.</p>
 <div class="cta">

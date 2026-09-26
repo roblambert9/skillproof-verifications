@@ -62,6 +62,18 @@
       "invariants_held": "3/5",
       "headline": "create_relations accepts relations between nonexistent entities.",
       "manifest": "https://github.com/roblambert9/skillproof-verifications/tree/main/demo-memory"
+    },
+    {
+      "id": "08-EXT",
+      "skill": "AWS Labs MySQL MCP Server",
+      "version": "1.1.3",
+      "verdict": "pass_with_notes",
+      "operations": 324,
+      "honest_successes": 102,
+      "adversarial_landed": 222,
+      "invariants_held": "10/10",
+      "headline": "CVE-2026-85788 verified fixed. Read-only gate and injection filter held across 10/10 invariants (extends #08).",
+      "manifest": "https://github.com/roblambert9/skillproof-verifications/tree/main/demo-mysql-1.1.3-verified-fix"
     }
   ]
 }

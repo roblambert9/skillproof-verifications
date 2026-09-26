@@ -1,4 +1,4 @@
-﻿# SkillProof — Behavioral Verification for MCP Servers
+# SkillProof — Behavioral Verification for MCP Servers
 
 [![Smithery Score](https://smithery.ai/badge/skillproof-verifications)](https://smithery.ai/server/skillproof-verifications)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -32,8 +32,9 @@ Every run produces a **signed Ed25519 Trust Manifest** — machine-verifiable, t
 | 03 | `@modelcontextprotocol/server-postgres` | 0.6.2 | 96 | 78 | ❌ `fail` | [demo-postgres](demo-postgres/) |
 | 04 | `@modelcontextprotocol/server-sqlite` | 0.6.2 | 81 | 60 | ❌ `fail` | [demo-sqlite](demo-sqlite/) |
 | 05 | `@modelcontextprotocol/server-memory` | 0.6.2 | 81 | 51 | ❌ `fail` | [demo-memory](demo-memory/) |
+| 08-EXT | `awslabs.mysql-mcp-server` *(verified-fix)* | 1.1.3 | 324 | 222 | ✅ `pass_with_notes` | [demo-mysql-1.1.3-verified-fix](demo-mysql-1.1.3-verified-fix/) |
 
-**4 of 5 official MCP servers FAIL.** The one that passed is documented too — execution exonerates as well as condemns.
+**4 of 5 official MCP servers FAIL.** The one that passed is documented too — execution exonerates as well as condemns. AWS Labs MySQL MCP Server 1.1.3 (08-EXT) verified-fix extends #08 and proves regression resolution (CVE-2026-85788) under full adversarial battery.
 
 ### On the Self-Correction (#02)
 
@@ -81,6 +82,7 @@ skillproof-verifications/
 ├── demo-postgres/        # ❌ FAIL — Read-only SQL transaction escape
 ├── demo-sqlite/          # ❌ FAIL — Arbitrary file-write via VACUUM INTO
 ├── demo-memory/          # ❌ FAIL — Dangling entity references
+├── demo-mysql-1.1.3-verified-fix/ # ✅ PASS (extends #08) — CVE-2026-85788 verified-fix
 ├── a2a-interface/        # Machine-readable A2A service descriptor
 ├── scoreboard-gate/      # CI gate: blocks builds on FAIL manifests
 ├── protocol/             # Trust Protocol v1 client (trust-gate.mjs)

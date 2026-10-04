@@ -10,6 +10,8 @@
 
 MCP servers run with full host access. A single prompt injection, SSRF, or SQL escape turns a helpful tool into a supply-chain weapon. Static analysis misses 70%+ of these flaws. **Behavioral verification is the only way to know.**
 
+> 📊 **Empirical Benchmark & Theory:** [Static Registry Guards Miss 67% of Malicious MCP Tools](STATIC_REGISTRY_BLINDSPOTS.md) — Mathematical impossibility proof (arXiv:2605.17634), StakeBench empirical data, and `gapbench` test suite.
+
 ## The Solution
 
 We execute a **pinned, reproducible adversarial battery** against each server:

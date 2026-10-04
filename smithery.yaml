@@ -1,0 +1,14 @@
+name: skillproof-verifications
+version: 1.0.0
+description: "Behavioral verification and adversarial injection testing for Model Context Protocol (MCP) servers. Issues cryptographically signed Ed25519 Trust Manifests."
+author: Rob Lambert <rob@nanoempireai.com>
+homepage: https://www.nanoempireai.com/manifests.html
+license: MIT
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      SKILLPROOF_API_KEY:
+        type: string
+        description: "Optional SkillProof API Key for high-frequency audits"

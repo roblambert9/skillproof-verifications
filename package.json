@@ -1,0 +1,26 @@
+{
+  "name": "skillproof-verifications",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Behavioral verification and adversarial injection testing for Model Context Protocol (MCP) servers. Issues cryptographically signed Ed25519 Trust Manifests.",
+  "main": "index.js",
+  "bin": {
+    "skillproof": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "node index.js --test"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "security",
+    "verification",
+    "ai-agents"
+  ],
+  "author": "Rob Lambert <rob@nanoempireai.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  }
+}
